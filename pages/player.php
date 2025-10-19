@@ -1,29 +1,33 @@
 <?php
 /**
- * Компонент: Epic Player
- * Используйте этот код на странице альбома или плейлиста
- * 
- * Поместите в pages/albums.php или создайте pages/player.php
+ * Компонент: Epic Player - КРАСИВАЯ И РАБОЧАЯ ВЕРСИЯ
  */
 ?>
 
-<div id="epic-player" class="epic-player">
+<div id="epic-player" class="epic-player" role="region" aria-label="Музыкальный плеер">
     
-    <!-- === ЭКРАН ПЛЕЕРА === -->
+    <!-- === ЭКРАН ПЛЕЕРА (главный контейнер) === -->
     <div class="player-display">
-        <!-- Аудио плеер (скрыт) -->
-        <audio controls style="display: none;"></audio>
         
-        <!-- Видео плеер (скрыт по умолчанию) -->
-        <video style="display: none;" controls></video>
-        
-        <!-- Обложка альбома -->
-        <div class="player-cover">
-            <img src="/assets/images/placeholder.png" alt="Обложка">
-            <div class="player-overlay">
-                <div class="play-big">▶</div>
-            </div>
+        <!-- АУДИО: Обложка по умолчанию -->
+        <div class="player-cover" style="display: flex; width: 100%; height: 100%;">
+            <img src="/assets/images/placeholder.png" alt="Обложка" style="width: 100%; height: 100%; object-fit: contain; background: #000;">
         </div>
+        
+        <!-- ВИДЕО: Скрыто по умолчанию -->
+        <video 
+            id="video-player"
+            controls 
+            controlsList="nodownload"
+            style="display: none; width: 100%; height: 100%; object-fit: contain; background: #000;">
+        </video>
+        
+        <!-- АУДИО (невидимый плеер для фона) -->
+        <audio 
+            id="audio-player"
+            style="display: none;">
+        </audio>
+        
     </div>
     
     <!-- === ИНФОРМАЦИЯ О ТРЕКЕ === -->
@@ -53,11 +57,11 @@
     </div>
     
     <!-- === РЕЖИМЫ === -->
-    <div class="player-modes">
-        <button class="mode-btn active" data-mode="audio" title="Аудио">🎵 Аудио</button>
-        <button class="mode-btn" data-mode="video" title="Видео">🎬 Видео</button>
-        <button class="mode-btn" data-mode="queue" title="Очередь">📋 Очередь</button>
-        <button class="mode-btn" data-mode="lyrics" title="Текст">📝 Текст</button>
+    <div class="player-modes" role="tablist">
+        <button class="mode-btn active" data-mode="audio" role="tab" aria-selected="true" title="Аудио режим">🎵 АУДИО</button>
+        <button class="mode-btn" data-mode="video" role="tab" aria-selected="false" title="Видео режим">🎬 ВИДЕО</button>
+        <button class="mode-btn" data-mode="queue" role="tab" aria-selected="false" title="Очередь треков">📋 ОЧЕРЕДЬ</button>
+        <button class="mode-btn" data-mode="lyrics" role="tab" aria-selected="false" title="Текст песни">📄 ТЕКСТ</button>
     </div>
     
     <!-- === СПИСОК ТРЕКОВ (ОЧЕРЕДЬ) === -->
@@ -77,35 +81,17 @@
     
 </div>
 
-<!-- Подключаем стили и скрипты -->
+<!-- Подключаем стили -->
 <link rel="stylesheet" href="/assets/css/epic-player.css">
+
+<!-- Подключаем скрипт -->
 <script src="/assets/js/epic-player.js"></script>
 
-<!-- Пример использования в JavaScript -->
 <script>
-    // После загрузки страницы
-    document.addEventListener('DOMContentLoaded', () => {
-        // Загружаем плейлист альбома
-        const albumId = new URLSearchParams(window.location.search).get('id');
-        if (window.epicPlayer && albumId) {
-            window.epicPlayer.loadPlaylist(albumId);
-        }
-    });
-    
-    // Пример создания плейлиста
-    async function createMyPlaylist() {
-        const playlistId = await window.epicPlayer.createPlaylist(
-            'Мой плейлист',
-            'Описание моего плейлиста'
-        );
-        console.log('Плейлист создан:', playlistId);
+// Инициализация плеера при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.epicPlayer) {
+        console.log('✅ Плеер уже инициализирован');
     }
-    
-    // Пример добавления трека
-    async function addTrackToPlaylist(trackId, playlistId) {
-        const success = await window.epicPlayer.addToPlaylist(trackId, playlistId);
-        if (success) {
-            alert('✅ Трек добавлен!');
-        }
-    }
+});
 </script>
