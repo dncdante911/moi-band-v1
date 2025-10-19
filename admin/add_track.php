@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $coverPath = saveFile($_FILES['cover'], 'covers');
         $fullTrackPath = saveFile($_FILES['fullTrack'], 'full');
 
-        if ($coverPath && $snippetPath && $fullTrackPath) {
+        if ($coverPath && $fullTrackPath) {
             $sql = "INSERT INTO Track (title, description, albumId, coverImagePath, fullAudioPath) 
                     VALUES (:title, :description, :albumId, :coverImagePath, :fullAudioPath)";
             $stmt = $pdo->prepare($sql);

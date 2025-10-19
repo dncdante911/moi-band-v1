@@ -27,6 +27,10 @@ if (!$post) {
 }
 ?>
 
+<div class="punk-banner">
+  <h1 style="text-shadow: 3px 3px #FF00FF, -2px -2px #00FFFF;">RAW ENERGY</h1>
+</div>
+
 <div class="container page-content">
     <article class="full-post">
         <h1><?= htmlspecialchars($post['title']) ?></h1>

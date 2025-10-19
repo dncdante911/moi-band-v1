@@ -66,17 +66,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Обновляем запись в базе данных
-        $sql = "UPDATE Track SET 
-                    title = :title, 
-                    description = :description, 
-                    coverImagePath = :coverImagePath, 
-                    fullAudioPath = :fullAudioPath 
-                WHERE id = :id";
+$sql = "UPDATE Track SET 
+    title = :title, 
+    description = :description, 
+    albumId = :albumId,
+    coverImagePath = :coverImagePath, 
+    fullAudioPath = :fullAudioPath 
+WHERE id = :id";
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':title' => $title,
             ':description' => $description,
+            ':albumId' => $albumId ?: null,
             ':coverImagePath' => $coverPath,
             ':fullAudioPath' => $fullTrackPath,
             ':id' => $trackId
@@ -143,13 +145,13 @@ if (!$track) {
             <div class="form-group">
                 <label for="cover">Новая обложка (оставить пустым, чтобы не менять)</label>
                 <input type="file" id="cover" name="cover" accept="image/jpeg, image/png">
-                <div class="current-file">Текущий файл: <?= htmlspecialchars(basename($track['coverImagePath'])) ?></div>
+                <div class="current-file">Текущий файл: <?= htmlspecialchars(basename($track['description'] ?? '')) ?></div>
             </div>
 
             <div class="form-group">
                 <label for="fullTrack">Новый полный трек (оставить пустым, чтобы не менять)</label>
                 <input type="file" id="fullTrack" name="fullTrack" accept=".mp3, .wav">
-                <div class="current-file">Текущий файл: <?= htmlspecialchars(basename($track['fullAudioPath'])) ?></div>
+                <div class="current-file">Текущий файл: <?= htmlspecialchars(basename($track['description'] ?? '')) ?></div>
             </div>
 
             <button type="submit" class="submit-button">Сохранить изменения</button>

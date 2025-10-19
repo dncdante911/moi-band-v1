@@ -1,0 +1,108 @@
+/* 
+ * Файл: assets/css/hamburger-menu.css
+ * Или добавить в responsive.css
+ */
+
+/* Гамбургер меню - скрыто по умолчанию */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    color: #FFD700;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.3s;
+}
+
+.hamburger-menu:hover {
+    color: #FFE135;
+    text-shadow: 0 0 10px rgba(255,215,0,0.6);
+}
+
+.hamburger-menu.active {
+    color: #FFE135;
+}
+
+/* На мобильных экранах */
+@media (max-width: 768px) {
+    /* Показываем гамбургер */
+    .hamburger-menu {
+        display: block;
+    }
+    
+    /* Навигация - скрыта по умолчанию */
+    .main-nav {
+        display: none !important;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 10, 0.98);
+        border-bottom: 2px solid #FFD700;
+        flex-direction: column;
+        padding: 15px 0;
+        z-index: 1000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+    
+    /* Активная навигация */
+    .main-nav.active {
+        display: flex !important;
+    }
+    
+    /* Элементы меню */
+    .main-nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 0 !important;
+    }
+    
+    .main-nav li {
+        margin: 0 !important;
+        border-bottom: 1px solid rgba(255,215,0,0.1);
+    }
+    
+    .main-nav li:last-child {
+        border-bottom: none;
+    }
+    
+    .main-nav a {
+        display: block;
+        padding: 15px 20px;
+        width: 100%;
+        text-align: left;
+        transition: all 0.3s;
+    }
+    
+    .main-nav a:hover {
+        background: rgba(255,215,0,0.1);
+        padding-left: 30px;
+    }
+    
+    /* Хедер на мобильных */
+    .header-container {
+        justify-content: space-between;
+    }
+    
+    .logo a {
+        font-size: 1.3rem;
+    }
+}
+
+/* На очень маленьких экранах */
+@media (max-width: 480px) {
+    .logo a {
+        font-size: 1rem;
+    }
+    
+    .hamburger-menu {
+        font-size: 1.2rem;
+        padding: 5px 10px;
+    }
+    
+    .main-nav a {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+}
