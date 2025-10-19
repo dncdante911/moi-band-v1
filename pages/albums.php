@@ -1,18 +1,70 @@
 <?php
 /**
- * Файл: pages/album.php
- * Страница отдельного альбома с треклистом
+ * Файл: pages/albums.php
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ - без бесконечного редиректа
  */
 
-$page_css = '/assets/css/album.css';
+$page_css = '/assets/css/albums.css';
 require_once __DIR__ . '/../include_config/db_connect.php';
 
-// Проверяем параметр ID
+
+// Проверяем, что ID альбома передан и является числом
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
-    header('Location: /pages/albums.php');
+    // Если ID не передан, показываем список всех альбомов
+    require_once __DIR__ . '/../include_config/header.php';
+    
+    // Получаем все альбомы
+    $stmt = $pdo->query('SELECT * FROM Albums ORDER BY releaseDate DESC');
+    $albums = $stmt->fetchAll();
+    ?>
+    
+    <div class="container page-content">
+        <h1>💿 Все альбомы</h1>
+        
+        <?php if (empty($albums)): ?>
+            <p>🎵 Альбомов пока нет</p>
+        <?php else: ?>
+            <div class="album-showcase-grid">
+                <?php $index = 0; foreach ($albums as $album): $index++; ?>
+                    <a href="?id=<?= (int)$album['id'] ?>" class="album-showcase-card">
+                        <div class="album-showcase-inner">
+                            <div class="album-number"><?= sprintf('%02d', $index) ?></div>
+                            
+                            <div class="album-frame-wrapper">
+                                <div class="album-frame-outer">
+                                    <div class="album-frame-inner">
+                                        <img src="/<?= htmlspecialchars(ltrim($album['coverImagePath'], '/')) ?>" 
+                                             alt="<?= htmlspecialchars($album['title']) ?>"
+                                             loading="lazy"
+                                             class="album-image">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="album-info">
+                                <h3 class="album-title">
+                                    <?= htmlspecialchars($album['title']) ?>
+                                </h3>
+                                
+                                <?php if ($album['releaseDate']): ?>
+                                    <div class="album-year">
+                                        📅 <?= date('Y', strtotime($album['releaseDate'])) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    
+    <?php
+    require_once __DIR__ . '/../include_config/footer.php';
     exit;
 }
 
+// Если ID передан - показываем конкретный альбом
 $albumId = (int)$_GET['id'];
 
 // Получаем информацию об альбоме
@@ -20,6 +72,7 @@ $stmt = $pdo->prepare("SELECT * FROM Albums WHERE id = ?");
 $stmt->execute([$albumId]);
 $album = $stmt->fetch();
 
+// Если альбома нет - показываем список
 if (!$album) {
     header('Location: /pages/albums.php');
     exit;
@@ -84,7 +137,9 @@ require_once __DIR__ . '/../include_config/header.php';
             <a href="/pages/albums.php" class="back-link">← Вернуться в каталог</a>
         </div>
     </section>
-    
+<?php
+require_once __DIR__ . '/../pages/player.php';
+?>
     <!-- === ТРЕКЛИСТ === -->
     <section class="album-tracklist">
         <h2 class="tracklist-title">📋 Треклист</h2>

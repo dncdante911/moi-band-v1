@@ -41,8 +41,6 @@ CREATE TABLE `Albums` (
 
 LOCK TABLES `Albums` WRITE;
 /*!40000 ALTER TABLE `Albums` DISABLE KEYS */;
-INSERT INTO `Albums` VALUES
-(2,'Хроники забытых миров','«Хроники забытых миров» — это музыкальное путешествие длиной в 12 треков через\r\nлегенды, которые мир забыл. От пробуждения древних стражей до триумфального\r\nрассвета новой эры — альбом проводит слушателя через эпические битвы, мифические\r\nвозрождения, трагические падения и лирические истории о любви и потере.','/public/uploads/album_covers/68f4dc911d0b5.png','2025-08-25','2025-10-19 15:41:53','2025-10-19 15:41:53');
 /*!40000 ALTER TABLE `Albums` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,6 +106,162 @@ CREATE TABLE `Events` (
 LOCK TABLES `Events` WRITE;
 /*!40000 ALTER TABLE `Events` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Events` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Favorites`
+--
+
+DROP TABLE IF EXISTS `Favorites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Favorites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `track_id` int(11) NOT NULL,
+  `addedAt` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_favorite` (`user_id`,`track_id`),
+  KEY `track_id` (`track_id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `Favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Favorites_ibfk_2` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Favorites`
+--
+
+LOCK TABLES `Favorites` WRITE;
+/*!40000 ALTER TABLE `Favorites` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Favorites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PlayHistory`
+--
+
+DROP TABLE IF EXISTS `PlayHistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PlayHistory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `track_id` int(11) NOT NULL,
+  `playedAt` datetime DEFAULT current_timestamp(),
+  `duration_played` int(11) DEFAULT NULL COMMENT 'Сколько секунд сыграло',
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_track` (`track_id`),
+  KEY `idx_played_at` (`playedAt`),
+  CONSTRAINT `PlayHistory_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `PlayHistory_ibfk_2` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PlayHistory`
+--
+
+LOCK TABLES `PlayHistory` WRITE;
+/*!40000 ALTER TABLE `PlayHistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PlayHistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PlayQueue`
+--
+
+DROP TABLE IF EXISTS `PlayQueue`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PlayQueue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `current_track_id` int(11) DEFAULT NULL,
+  `queue_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'JSON с идами треков в очереди' CHECK (json_valid(`queue_data`)),
+  `currentTime` int(11) DEFAULT 0 COMMENT 'Текущая позиция в секундах',
+  `isPlaying` tinyint(1) DEFAULT 0,
+  `updatedAt` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  KEY `current_track_id` (`current_track_id`),
+  CONSTRAINT `PlayQueue_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `PlayQueue_ibfk_2` FOREIGN KEY (`current_track_id`) REFERENCES `Track` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PlayQueue`
+--
+
+LOCK TABLES `PlayQueue` WRITE;
+/*!40000 ALTER TABLE `PlayQueue` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PlayQueue` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PlaylistTracks`
+--
+
+DROP TABLE IF EXISTS `PlaylistTracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PlaylistTracks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `playlist_id` int(11) NOT NULL,
+  `track_id` int(11) NOT NULL,
+  `position` int(11) NOT NULL,
+  `addedAt` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_playlist_track` (`playlist_id`,`track_id`),
+  KEY `track_id` (`track_id`),
+  KEY `idx_playlist` (`playlist_id`),
+  CONSTRAINT `PlaylistTracks_ibfk_1` FOREIGN KEY (`playlist_id`) REFERENCES `Playlists` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `PlaylistTracks_ibfk_2` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PlaylistTracks`
+--
+
+LOCK TABLES `PlaylistTracks` WRITE;
+/*!40000 ALTER TABLE `PlaylistTracks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PlaylistTracks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Playlists`
+--
+
+DROP TABLE IF EXISTS `Playlists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Playlists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `coverImagePath` varchar(255) DEFAULT NULL,
+  `isPublic` tinyint(1) DEFAULT 0,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_public` (`isPublic`),
+  CONSTRAINT `Playlists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Playlists`
+--
+
+LOCK TABLES `Playlists` WRITE;
+/*!40000 ALTER TABLE `Playlists` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Playlists` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -245,6 +399,34 @@ INSERT INTO `Rooms` VALUES
 UNLOCK TABLES;
 
 --
+-- Table structure for table `SongLyrics`
+--
+
+DROP TABLE IF EXISTS `SongLyrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `SongLyrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `track_id` int(11) NOT NULL,
+  `lyrics` longtext DEFAULT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `track_id` (`track_id`),
+  CONSTRAINT `SongLyrics_ibfk_1` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `SongLyrics`
+--
+
+LOCK TABLES `SongLyrics` WRITE;
+/*!40000 ALTER TABLE `SongLyrics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SongLyrics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Track`
 --
 
@@ -262,10 +444,15 @@ CREATE TABLE `Track` (
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `fossbillingProductId` int(11) DEFAULT NULL,
   `lyrics` text DEFAULT NULL,
+  `lyricsPath` varchar(255) DEFAULT NULL,
+  `videoPath` varchar(255) DEFAULT NULL,
+  `videoCoverPath` varchar(255) DEFAULT NULL,
+  `duration` int(11) DEFAULT 0 COMMENT 'Длительность в секундах',
+  `views` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Track_albumId_fkey` (`albumId`),
   CONSTRAINT `Track_albumId_fkey` FOREIGN KEY (`albumId`) REFERENCES `Albums` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,13 +461,37 @@ CREATE TABLE `Track` (
 
 LOCK TABLES `Track` WRITE;
 /*!40000 ALTER TABLE `Track` DISABLE KEYS */;
-INSERT INTO `Track` VALUES
-(21,'1. Последний из драконов',NULL,2,'/public/uploads/album_covers/68f4dc911d0b5.png','/public/uploads/full/68f4dcc320f34.wav','2025-10-19 15:42:43.135','2025-10-19 15:42:43',NULL,NULL),
-(22,'2. Спящий Страж',NULL,2,'/public/uploads/album_covers/68f4dc911d0b5.png','/public/uploads/full/68f4dcc3321bc.mp3','2025-10-19 15:42:43.206','2025-10-19 15:42:43',NULL,NULL),
-(23,'3. Стальной Легион',NULL,2,'/public/uploads/album_covers/68f4dc911d0b5.png','/public/uploads/full/68f4dcc344680.wav','2025-10-19 15:42:43.280','2025-10-19 15:42:43',NULL,NULL),
-(24,'4. Феникс',NULL,2,'/public/uploads/album_covers/68f4dc911d0b5.png','/public/uploads/full/68f4dcc3595c5.wav','2025-10-19 15:42:43.366','2025-10-19 15:42:43',NULL,NULL),
-(25,'5. Средиземье',NULL,2,'/public/uploads/album_covers/68f4dc911d0b5.png','/public/uploads/full/68f4dcc364ec0.wav','2025-10-19 15:42:43.414','2025-10-19 15:42:43',NULL,NULL);
 /*!40000 ALTER TABLE `Track` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TrackLikes`
+--
+
+DROP TABLE IF EXISTS `TrackLikes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `TrackLikes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `track_id` int(11) NOT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_track` (`user_id`,`track_id`),
+  KEY `track_id` (`track_id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `TrackLikes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `TrackLikes_ibfk_2` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TrackLikes`
+--
+
+LOCK TABLES `TrackLikes` WRITE;
+/*!40000 ALTER TABLE `TrackLikes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TrackLikes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -363,6 +574,39 @@ INSERT INTO `Users` VALUES
 (2,'dncdante','nfsdante@gmail.com','$argon2id$v=19$m=65536,t=4,p=1$Vk5DeW5sWGJnN3NLY2FwYQ$2t14wnpfvnikpVOKGWaH3LP3yJBOjUKgOTHbkgUnzJA','dncdante',NULL,NULL,'online',NULL,'2025-10-19 11:23:36','2025-10-19 11:23:36',0,0,0,'251fb5ec54910b63b1618003a7c0f03293c8f420c7d8efc5a4ec2a5a7ee102a9','2025-10-20 11:23:36');
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `VideoClips`
+--
+
+DROP TABLE IF EXISTS `VideoClips`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `VideoClips` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `track_id` int(11) NOT NULL,
+  `videoPath` varchar(255) NOT NULL,
+  `coverImagePath` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `duration` int(11) DEFAULT NULL COMMENT 'Длительность видео в секундах',
+  `views` int(11) DEFAULT 0,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_track` (`track_id`),
+  CONSTRAINT `VideoClips_ibfk_1` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `VideoClips`
+--
+
+LOCK TABLES `VideoClips` WRITE;
+/*!40000 ALTER TABLE `VideoClips` DISABLE KEYS */;
+/*!40000 ALTER TABLE `VideoClips` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -373,4 +617,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-19 15:50:44
+-- Dump completed on 2025-10-19 17:26:54
