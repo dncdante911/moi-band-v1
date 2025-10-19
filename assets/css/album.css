@@ -1,0 +1,46 @@
+/* Файл: assets/css/album.css */
+
+/* Стили для страницы одного альбома */
+.album-page-header {
+    display: flex;
+    flex-wrap: wrap; /* Для мобильных устройств */
+    gap: 30px;
+    margin-bottom: 40px;
+}
+.album-page-cover {
+    flex-shrink: 0;
+}
+.album-page-cover img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.album-page-info h1 {
+    margin-top: 0;
+    font-size: 3rem;
+}
+.release-date {
+    font-style: italic;
+    color: #ccc;
+    margin-top: -15px; /* Поднимаем дату ближе к заголовку */
+}
+.album-description {
+    margin-top: 20px;
+}
+.tracklist {
+    margin-top: 40px;
+}
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    gap: 15px;
+}
+.track-item:last-child {
+    border-bottom: none;
+}
+.track-number { font-weight: bold; color: #888; }
+.track-title { flex-grow: 1; font-size: 1.1rem; }
+.track-player audio { width: 300px; height: 40px; }

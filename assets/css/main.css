@@ -1,0 +1,93 @@
+/* Файл: assets/css/main.css - ИСПРАВЛЕННАЯ ВЕРСИЯ */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Roboto:wght@400;700&display=swap');
+
+/* --- ОБЩИЕ СТИЛИ --- */
+body {
+    background-color: #000;
+    font-family: 'Roboto', sans-serif;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-size: 16px; /* Задаем базовый размер шрифта */
+}
+
+/* --- АНИМАЦИЯ ФОНА --- */
+#particles-js, #background-video {
+    position: fixed; right: 0; bottom: 0;
+    min-width: 100%; min-height: 100%;
+    top: 0; left: 0; z-index: -1;
+}
+#particles-js { z-index: 0; }
+#background-video { opacity: 0.2; object-fit: cover; }
+
+/* --- ОБЩАЯ СТРУКТУРА --- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+.page-content {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 30px 40px;
+    border-radius: 8px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 5;
+}
+h1, h2, h3 {
+    font-family: 'Cinzel Decorative', serif;
+}
+h1 { font-size: 2.5rem; }
+h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ff5500;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+p { line-height: 1.7; }
+
+/* --- ШАПКА И МЕНЮ --- */
+.site-header {
+    background-color: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    border-bottom: 1px solid #444;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo a {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.5rem; /* Уменьшаем логотип */
+    color: #fff;
+    text-decoration: none;
+}
+.main-nav ul { margin: 0; padding: 0; list-style: none; display: flex; }
+.main-nav li { margin-left: 20px; }
+.main-nav a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem; /* Уменьшаем меню */
+    transition: color 0.3s, text-shadow 0.3s;
+}
+.main-nav a:hover { color: #ff5500; text-shadow: 0 0 5px #ff5500; }
+
+/* --- ПОДВАЛ --- */
+.site-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #111;
+    border-top: 1px solid #333;
+    margin-top: 40px;
+}

@@ -1,0 +1,7 @@
+/* Файл: assets/css/post.css */
+.full-post { max-width: 800px; margin: 0 auto; background-color: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 8px; }
+.full-post h1 { font-family: 'Cinzel Decorative', serif; font-size: 3rem; text-align: center; margin-top: 0; }
+.post-date { text-align: center; color: #a0aec0; margin-top: -15px; margin-bottom: 30px; }
+.post-image { width: 100%; height: auto; border-radius: 5px; margin-bottom: 30px; }
+.post-content { font-size: 1.1rem; line-height: 1.8; text-align: justify; }
+.back-link { display: inline-block; margin-top: 40px; color: #63b3ed; text-decoration: none; font-weight: bold; }

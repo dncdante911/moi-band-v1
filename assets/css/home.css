@@ -1,0 +1,99 @@
+/* Файл: assets/css/home.css - ИСПРАВЛЕННАЯ ВЕРСИЯ */
+
+/* --- Стили для Баннера --- */
+.hero-banner {
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background: url('https://i.imgur.com/8i2D1sB.jpeg') no-repeat center center/cover;
+}
+.hero-banner::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+}
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+.hero-content h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 4rem;
+    text-shadow: 3px 3px 10px rgba(0,0,0,1);
+}
+.hero-content p {
+    font-size: 1.5rem;
+    color: #ccc;
+}
+.page-content {
+    margin-top: -80px !important; /* Сдвигаем контент на баннер */
+}
+
+/* --- Стили для секции новостей --- */
+.news-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.news-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 5px;
+    border-left: 3px solid #ff5500;
+}
+.news-item h3 { font-family: 'Cinzel Decorative', serif; margin-top: 0; font-size: 1.4rem; }
+.news-date { font-size: 0.8rem; color: #a0aec0; margin-bottom: 15px; }
+.news-readmore { display: inline-block; margin-top: 10px; color: #63b3ed; text-decoration: none; font-weight: bold; }
+.news-readmore:hover { text-decoration: underline; }
+
+/* --- ПРАВИЛЬНЫЕ СТИЛИ ДЛЯ СЕТКИ АЛЬБОМОВ --- */
+.albums-section {
+    margin-top: 50px;
+}
+.album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+.album-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+    /* Это важно для правильного соотношения сторон */
+    aspect-ratio: 1 / 1;
+}
+.album-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 85, 0, 0.5);
+}
+.album-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+.album-card:hover img {
+    transform: scale(1.1);
+}
+.album-title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+    padding: 30px 15px 15px 15px;
+    text-align: center;
+}
+.album-title-overlay h3 {
+    margin: 0;
+    color: #fff;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+}
