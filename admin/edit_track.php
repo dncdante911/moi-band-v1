@@ -1,7 +1,13 @@
 <?php
 /**
  * Файл: admin/edit_track.php
- * ИСПРАВЛЕННАЯ ВЕРСИЯ - редактирование трека с текстом и видео
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ v2.1 - С РАСЧЁТОМ ДЛИТЕЛЬНОСТИ
+ * 
+ * Исправления:
+ * ✅ Вычисляет и сохраняет длительность трека в БД
+ * ✅ Поддерживает MP3 и WAV парсинг
+ * ✅ Использует ffprobe если доступен
+ * ✅ Исправлена загрузка видео
  */
 
 require_once '../include_config/config.php';
@@ -81,58 +87,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 
-                $videoPath = $currentTrack['videoPath'];
-                if (!empty($_FILES['video']['name'])) {
-                    $newVideoPath = saveFile($_FILES['video'], 'videos');
-                    if ($newVideoPath) {
-                        if ($videoPath) @unlink('..' . $videoPath);
-                        $videoPath = $newVideoPath;
-                    }
-                }
+$videoPath = $currentTrack['videoPath'];
+$videoUpdated = false;
+
+if (!empty($_FILES['video']['name'])) {
+    $newVideoPath = saveFile($_FILES['video'], 'videos');
+    if ($newVideoPath) {
+        // Удалить старое видео
+        if ($videoPath) {
+            @unlink('..' . $videoPath);
+        }
+        $videoPath = $newVideoPath;
+        $videoUpdated = true;
+        error_log("✅ Видео загружено: $videoPath");
+    }
+}
                 
                 // Обновляем основной трек
-                $sql = "UPDATE Track SET 
-                    title = :title, 
-                    description = :description, 
-                    albumId = :albumId,
-                    coverImagePath = :coverImagePath, 
-                    fullAudioPath = :fullAudioPath,
-                    videoPath = :videoPath
-                WHERE id = :id";
+$sql = "UPDATE Track SET 
+    title = :title, 
+    description = :description, 
+    albumId = :albumId,
+    coverImagePath = :coverImagePath, 
+    fullAudioPath = :fullAudioPath,
+    videoPath = :videoPath
+WHERE id = :id";
                 
-                $stmt = $pdo->prepare($sql);
-                $result = $stmt->execute([
-                    ':title' => $title,
-                    ':description' => $description,
-                    ':albumId' => $albumId ?: null,
-                    ':coverImagePath' => $coverPath,
-                    ':fullAudioPath' => $fullTrackPath,
-                    ':videoPath' => $videoPath,
-                    ':id' => $trackId
-                ]);
+$stmt = $pdo->prepare($sql);
+$result = $stmt->execute([
+    ':title' => $title,
+    ':description' => $description,
+    ':albumId' => $albumId ?: null,
+    ':coverImagePath' => $coverPath,
+    ':fullAudioPath' => $fullTrackPath,
+    ':videoPath' => $videoPath,
+    ':id' => $trackId
+]);
                 
                 if (!$result) {
                     $errors[] = 'Ошибка при обновлении трека';
                 } else {
-                    // Сохраняем текст песни отдельно
-                    if (!empty($lyrics)) {
-                        $stmt = $pdo->prepare("
-                            INSERT INTO SongLyrics (track_id, lyrics)
-                            VALUES (:track_id, :lyrics)
-                            ON DUPLICATE KEY UPDATE lyrics = VALUES(lyrics)
-                        ");
-                        $stmt->execute([
-                            ':track_id' => $trackId,
-                            ':lyrics' => $lyrics
-                        ]);
-                    }
+                    // ✅ НОВОЕ v2.1: ВЫЧИСЛИТЬ ДЛИТЕЛЬНОСТЬ АУДИОФАЙЛА
+                    $duration = calculateAudioDuration('..' . $fullTrackPath);
                     
-                    // Успешное обновление
-                    header('Location: index.php?success=1');
-                    exit;
-                }
+                    $duration = calculateAudioDuration('..' . $fullTrackPath);
+    
+    if ($duration > 0) {
+        $stmt = $pdo->prepare("UPDATE Track SET duration = ? WHERE id = ?");
+        $stmt->execute([$duration, $trackId]);
+        error_log("⏱️ Длительность трека #$trackId: " . formatTime($duration));
+    }
+                    
+                           // ✅ ВСТАВИТЬ ИЛИ ОБНОВИТЬ видео в таблицу VideoClips
+        $stmt = $pdo->prepare("
+            INSERT INTO VideoClips (track_id, videoPath, coverImagePath, title, duration)
+            VALUES (:track_id, :videoPath, :coverImagePath, :title, :duration)
+            ON DUPLICATE KEY UPDATE 
+                videoPath = VALUES(videoPath),
+                duration = VALUES(duration),
+                updatedAt = NOW()
+        ");
+        
+                $stmt->execute([
+            ':track_id' => $trackId,
+            ':videoPath' => $videoPath,
+            ':coverImagePath' => $coverPath,  // Использовать обложку трека
+            ':title' => $track['title'],
+            ':duration' => $videoDuration
+        ]);
+        
+                error_log("✅ Видео сохранено в VideoClips: длительность = $videoDuration сек");
+    }
+    
+    // Сохраняем текст песни отдельно
+    if (!empty($lyrics)) {
+        $stmt = $pdo->prepare("
+            INSERT INTO SongLyrics (track_id, lyrics)
+            VALUES (:track_id, :lyrics)
+            ON DUPLICATE KEY UPDATE lyrics = VALUES(lyrics)
+        ");
+        $stmt->execute([
+            ':track_id' => $trackId,
+            ':lyrics' => $lyrics
+        ]);
+    }
+    
+    // Успешное обновление
+    header('Location: index.php?success=1');
+    exit;
+}
+
             }
-        } catch (Exception $e) {
+            
+        catch (Exception $e) {
             $errors[] = 'Ошибка БД: ' . $e->getMessage();
         }
     }
@@ -148,6 +195,225 @@ $track = $stmt->fetch();
 if (!$track) {
     header('Location: index.php');
     exit;
+}
+
+// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+
+/**
+ * Вычислить длительность аудиофайла
+ * ✅ Работает с MP3, WAV, OGG и другими форматами
+ */
+function calculateAudioDuration($filePath) {
+    if (!file_exists($filePath)) {
+        error_log("⚠️ Файл не найден: $filePath");
+        return 0;
+    }
+    
+    // Проверить размер файла
+    $fileSize = @filesize($filePath);
+    if ($fileSize < 1000) {
+        error_log("⚠️ Файл слишком мал: $filePath");
+        return 0;
+    }
+    
+    // Попытка 1: ffprobe (самый надёжный способ)
+    if (shell_exec('which ffprobe') !== null) {
+        $cmd = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . escapeshellarg($filePath) . " 2>/dev/null";
+        $output = @shell_exec($cmd);
+        
+        if ($output) {
+            $duration = (int)floatval(trim($output));
+            if ($duration > 0) {
+                error_log("✅ ffprobe: длительность = $duration сек");
+                return $duration;
+            }
+        }
+    }
+    
+    // Попытка 2: ffmpeg (если ffprobe не работает)
+    if (shell_exec('which ffmpeg') !== null) {
+        $cmd = "ffmpeg -i " . escapeshellarg($filePath) . " 2>&1 | grep Duration 2>/dev/null";
+        $output = @shell_exec($cmd);
+        
+        if (preg_match('/Duration: (\d+):(\d+):(\d+)/', $output, $matches)) {
+            $hours = (int)$matches[1];
+            $minutes = (int)$matches[2];
+            $seconds = (int)$matches[3];
+            $duration = $hours * 3600 + $minutes * 60 + $seconds;
+            
+            if ($duration > 0) {
+                error_log("✅ ffmpeg: длительность = $duration сек");
+                return $duration;
+            }
+        }
+    }
+    
+    // Попытка 3: Парсинг MP3 ID3 тегов (для MP3)
+    if (strtolower(pathinfo($filePath, PATHINFO_EXTENSION)) === 'mp3') {
+        $duration = extractMP3Duration($filePath);
+        if ($duration > 0) {
+            error_log("✅ MP3 парсер: длительность = $duration сек");
+            return $duration;
+        }
+    }
+    
+    // Попытка 4: Парсинг WAV (для WAV)
+    if (strtolower(pathinfo($filePath, PATHINFO_EXTENSION)) === 'wav') {
+        $duration = extractWAVDuration($filePath);
+        if ($duration > 0) {
+            error_log("✅ WAV парсер: длительность = $duration сек");
+            return $duration;
+        }
+    }
+    
+    error_log("⚠️ Не удалось определить длительность: $filePath");
+    return 0;
+}
+
+/**
+ * Парсер MP3 - извлекает длительность из ID3 тегов
+ */
+function extractMP3Duration($filePath) {
+    try {
+        $fp = @fopen($filePath, 'rb');
+        if (!$fp) return 0;
+        
+        // Пропустить ID3v2 тег если есть
+        $header = @fread($fp, 10);
+        if ($header && substr($header, 0, 3) === 'ID3') {
+            $size = ((ord($header[6]) & 0x7F) << 21) | ((ord($header[7]) & 0x7F) << 14) | 
+                   ((ord($header[8]) & 0x7F) << 7) | (ord($header[9]) & 0x7F);
+            @fseek($fp, $size + 10, SEEK_SET);
+        } else {
+            @rewind($fp);
+        }
+        
+        // Поиск первого MP3 фрейма
+        $maxRead = 100000; // Читаем максимум 100KB
+        $data = @fread($fp, $maxRead);
+        @fclose($fp);
+        
+        if (!$data) return 0;
+        
+        // Найти синхро слово (0xFFE или 0xFFF)
+        $pos = strpos($data, "\xFF");
+        if ($pos === false) return 0;
+        
+        $frame = substr($data, $pos, 4);
+        if (strlen($frame) < 4) return 0;
+        
+        // Парсинг заголовка фрейма
+        $byte1 = ord($frame[1]);
+        $byte2 = ord($frame[2]);
+        
+        // MPEG версия
+        $version = ($byte1 >> 3) & 0x03;
+        if ($version === 1) return 0; // Reserved
+        
+        // Слой
+        $layer = ($byte1 >> 1) & 0x03;
+        if ($layer !== 1) return 0;
+        
+        // Битрейт индекс
+        $bitrateIdx = ($byte2 >> 4) & 0x0F;
+        if ($bitrateIdx === 0 || $bitrateIdx === 15) return 0;
+        
+        // Таблица битрейтов (MPEG1 Layer 3)
+        $bitrates = [
+            0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, -1
+        ];
+        $bitrate = $bitrates[$bitrateIdx] * 1000; // В битах
+        
+        // Частота дискретизации индекс
+        $sampleRateIdx = ($byte2 >> 2) & 0x03;
+        $sampleRates = [44100, 48000, 32000, 0]; // MPEG1
+        $sampleRate = $sampleRates[$sampleRateIdx];
+        
+        if ($bitrate <= 0 || $sampleRate <= 0) return 0;
+        
+        // Размер фрейма
+        $padding = ($byte2 >> 1) & 0x01;
+        $frameSize = (144000 * $bitrate / $sampleRate) + $padding;
+        
+        // Количество фреймов (примерное)
+        $fileSize = @filesize($filePath);
+        if ($frameSize > 0) {
+            $frameCount = ($fileSize - $pos) / $frameSize;
+            
+            // Длительность
+            $duration = (int)($frameCount * 26.122); // 26.122 = 1152 сэмпла / 44.1kHz
+            
+            return max(0, $duration);
+        }
+        
+        return 0;
+    } catch (Exception $e) {
+        error_log("❌ MP3 парсер ошибка: " . $e->getMessage());
+        return 0;
+    }
+}
+
+/**
+ * Парсер WAV - извлекает длительность из RIFF заголовка
+ */
+function extractWAVDuration($filePath) {
+    try {
+        $fp = @fopen($filePath, 'rb');
+        if (!$fp) return 0;
+        
+        // Читаем заголовок RIFF
+        $header = @fread($fp, 36);
+        @fclose($fp);
+        
+        if (strlen($header) < 36) return 0;
+        
+        // Проверяем сигнатуру
+        if (substr($header, 0, 4) !== 'RIFF') return 0;
+        if (substr($header, 8, 4) !== 'WAVE') return 0;
+        if (substr($header, 12, 4) !== 'fmt ') return 0;
+        
+        // Парсим fmt чанк
+        $audioFormat = unpack('v', substr($header, 20, 2))[1];
+        $channels = unpack('v', substr($header, 22, 2))[1];
+        $sampleRate = unpack('V', substr($header, 24, 4))[1];
+        $byteRate = unpack('V', substr($header, 28, 4))[1];
+        $blockAlign = unpack('v', substr($header, 32, 2))[1];
+        $bitsPerSample = unpack('v', substr($header, 34, 2))[1];
+        
+        // Получаем размер файла
+        $fileSize = @filesize($filePath);
+        
+        // Размер данных в байтах
+        $dataSize = $fileSize - 44; // Минус заголовок
+        
+        if ($dataSize <= 0 || $sampleRate <= 0) return 0;
+        
+        // Длительность = размер данных / (битрейт / 8)
+        $bitrate = $channels * $sampleRate * $bitsPerSample;
+        $duration = (int)($dataSize / ($bitrate / 8));
+        
+        return max(0, $duration);
+    } catch (Exception $e) {
+        error_log("❌ WAV парсер ошибка: " . $e->getMessage());
+        return 0;
+    }
+}
+
+/**
+ * Форматирование времени
+ */
+function formatTime($seconds) {
+    if (!$seconds || $seconds < 0) return '0:00';
+    
+    $mins = (int)($seconds / 60);
+    $secs = (int)($seconds % 60);
+    $hours = (int)($mins / 60);
+    $mins = $mins % 60;
+    
+    if ($hours > 0) {
+        return sprintf("%d:%02d:%02d", $hours, $mins, $secs);
+    }
+    return sprintf("%d:%02d", $mins, $secs);
 }
 ?>
 
@@ -288,7 +554,7 @@ if (!$track) {
                     <div class="current-file">
                         📷 Текущая обложка: 
                         <img src="/<?= htmlspecialchars(ltrim($track['coverImagePath'], '/')) ?>" 
-                            alt="Обложка" style="max-width: 100px; margin-top: 5px;">
+                            alt="Обложка" style="max-width: 100px; margin-top: 5px; border-radius: 4px;">
                     </div>
                 </div>
                 
@@ -297,6 +563,9 @@ if (!$track) {
                     <input type="file" id="fullTrack" name="fullTrack" accept=".mp3, .wav">
                     <div class="current-file">
                         🎵 Текущий файл: <?= htmlspecialchars(basename($track['fullAudioPath'])) ?>
+                        <?php if ($track['duration'] > 0): ?>
+                            <br>⏱️ Длительность: <?= formatTime($track['duration']) ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

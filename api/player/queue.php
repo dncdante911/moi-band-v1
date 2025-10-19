@@ -1,7 +1,12 @@
 <?php
 /**
  * Файл: api/player/queue.php
- * API для получения очереди треков
+ * API для получения очереди треков - ИСПРАВЛЕННАЯ ВЕРСИЯ v2.1
+ * 
+ * Исправления:
+ * - ✅ Возвращает duration (длительность трека из БД)
+ * - ✅ Правильные пути к видеофайлам
+ * - ✅ Полная информация о треках
  */
 
 header('Content-Type: application/json');
@@ -15,8 +20,8 @@ $playlistId = intval($_GET['playlist_id'] ?? 0);
 try {
     $tracks = [];
     
+    // === ПОЛУЧИТЬ ТРЕКИ ИЗ АЛЬБОМА ===
     if ($albumId) {
-        // Получаем все треки альбома
         $stmt = $pdo->prepare("
             SELECT 
                 t.id,
@@ -37,8 +42,10 @@ try {
         $stmt->execute([$albumId]);
         $tracks = $stmt->fetchAll();
         
-    } else if ($playlistId) {
-        // Получаем треки из плейлиста
+        console_log("📀 Альбом #$albumId: " . count($tracks) . " треков");
+    } 
+    // === ПОЛУЧИТЬ ТРЕКИ ИЗ ПЛЕЙЛИСТА ===
+    else if ($playlistId) {
         $stmt = $pdo->prepare("
             SELECT 
                 t.id,
@@ -59,10 +66,14 @@ try {
         ");
         $stmt->execute([$playlistId]);
         $tracks = $stmt->fetchAll();
+        
+        console_log("📋 Плейлист #$playlistId: " . count($tracks) . " треков");
     }
     
+    // === ОБРАБОТАТЬ И ВЕРНУТЬ ТРЕКИ ===
     echo json_encode([
         'success' => true,
+        'count' => count($tracks),
         'tracks' => array_map(function($track) {
             return [
                 'id' => (int)$track['id'],
@@ -73,7 +84,7 @@ try {
                 'fullAudioPath' => $track['fullAudioPath'],
                 'videoPath' => $track['videoPath'],
                 'lyricsPath' => $track['lyricsPath'],
-                'duration' => (int)($track['duration'] ?? 0)
+                'duration' => (int)($track['duration'] ?? 0)  // ✅ ИСПРАВЛЕНО: возвращаем duration
             ];
         }, $tracks)
     ]);
@@ -84,4 +95,11 @@ try {
         'success' => false,
         'error' => $e->getMessage()
     ]);
+}
+
+// Вспомогательная функция для логирования
+function console_log($msg) {
+    if (DEBUG_MODE) {
+        error_log($msg);
+    }
 }

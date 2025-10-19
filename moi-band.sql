@@ -32,7 +32,7 @@ CREATE TABLE `Albums` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,6 +41,10 @@ CREATE TABLE `Albums` (
 
 LOCK TABLES `Albums` WRITE;
 /*!40000 ALTER TABLE `Albums` DISABLE KEYS */;
+INSERT INTO `Albums` VALUES
+(3,'Хроники забытых миров','«Хроники забытых миров» — это музыкальное путешествие длиной в 12 треков через\r\nлегенды, которые мир забыл. От пробуждения древних стражей до триумфального\r\nрассвета новой эры — альбом проводит слушателя через эпические битвы, мифические\r\nвозрождения, трагические падения и лирические истории о любви и потере.','/public/uploads/album_covers/68f4f7da160db.png','2025-09-25','2025-10-19 17:38:18','2025-10-19 17:38:18'),
+(4,'Эхо миров','','/public/uploads/album_covers/68f521f7f26c8.webp','2024-12-19','2025-10-19 20:37:59','2025-10-19 20:37:59'),
+(5,'Театр крови и костей (Live)','','/public/uploads/album_covers/68f5233f80410.png','2025-06-27','2025-10-19 20:43:27','2025-10-19 20:43:27');
 /*!40000 ALTER TABLE `Albums` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -414,7 +418,7 @@ CREATE TABLE `SongLyrics` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `track_id` (`track_id`),
   CONSTRAINT `SongLyrics_ibfk_1` FOREIGN KEY (`track_id`) REFERENCES `Track` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -423,6 +427,8 @@ CREATE TABLE `SongLyrics` (
 
 LOCK TABLES `SongLyrics` WRITE;
 /*!40000 ALTER TABLE `SongLyrics` DISABLE KEYS */;
+INSERT INTO `SongLyrics` VALUES
+(2,38,'[Verse 1]\r\nВ далёких горах, где туман\r\nСкрывает древние руины\r\nСпит последний великан\r\nДракон забытой долины.\r\nВека прошли с тех пор\r\nКогда он правил небесами.\r\nТеперь лишь старый фольклор\r\nХранит память о деяньях.\r\n\r\nНо пламя в сердце не погасло,\r\nХоть мир забыл о чудесах.\r\nПришло время сбросить маски,\r\nИ вновь расправить два крыла!\r\n\r\n[Chorus]\r\nПоследний из драконов\r\nВосстанет из пепла.\r\nПройдёт сквозь все миры\r\nЛюдских забытых снов.\r\nОгненным дыханием,\r\nНебо озарит.\r\nИ древним заклинанием\r\nМир преобразит!\r\n\r\n[Verse 2]\r\nРыцари давно забыли,\r\nКак сражаться с ним.\r\nМечи от ржи затупились,\r\nВ век новых технологий.\r\nНо есть среди людей один,\r\nКто верит в старые сказанья.\r\nОн знает - мифов властелин\r\nВернётся для воздаянья.\r\n\r\nВедь пламя в сердце не погасло,\r\nХоть мир забыл о чудесах.\r\nПришло время сбросить маски,\r\nИ вновь расправить два крыла!\r\n\r\n[Chorus]\r\nПоследний из драконов\r\nВосстанет из пепла.\r\nПройдёт сквозь все миры\r\nЛюдских забытых снов.\r\nОгненным дыханием,\r\nНебо озарит.\r\nИ древним заклинанием\r\nМир преобразит!\r\n\r\n[Bridge]\r\nПроснись, великий дракон!\r\nТвой час настал опять\r\nРазрушь обмана закон\r\nИ магию верни назад!\r\n\r\n[Chorus]\r\nПоследний из драконов\r\nВосстал из глубины.\r\nСломал людские троны\r\nИ рушит их умы.\r\nЗолотым сияньем\r\nМир теперь объят.\r\nНовым мирозданьем\r\nПравит древний ритуал!','2025-10-19 17:40:46','2025-10-19 17:40:46');
 /*!40000 ALTER TABLE `SongLyrics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -452,7 +458,7 @@ CREATE TABLE `Track` (
   PRIMARY KEY (`id`),
   KEY `Track_albumId_fkey` (`albumId`),
   CONSTRAINT `Track_albumId_fkey` FOREIGN KEY (`albumId`) REFERENCES `Albums` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,6 +467,47 @@ CREATE TABLE `Track` (
 
 LOCK TABLES `Track` WRITE;
 /*!40000 ALTER TABLE `Track` DISABLE KEYS */;
+INSERT INTO `Track` VALUES
+(38,'1. Последний из драконов','<br />\r\n<b>Deprecated</b>:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in <b>/var/www/www-root/data/www/lovix.top/admin/edit_track.php</b> on line <b>279</b><br />',3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84a937a2.wav','2025-10-19 17:40:10.604','2025-10-19 20:16:13',NULL,NULL,NULL,'/public/uploads/videos/68f51cdce1ecb.mp4',NULL,307,0),
+(39,'2. Спящий Страж',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84a97462.mp3','2025-10-19 17:40:10.619','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(40,'3. Стальной Легион',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84a994f4.wav','2025-10-19 17:40:10.636','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(41,'4. Феникс',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84a9d600.wav','2025-10-19 17:40:10.644','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(42,'5. Средиземье',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84a9f684.wav','2025-10-19 17:40:10.653','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(43,'6. Прощальный взгляд',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aa1726.wav','2025-10-19 17:40:10.661','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(44,'7. Восхождение',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aa37ba.wav','2025-10-19 17:40:10.670','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(45,'8. изгнанник мира',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aa583e.wav','2025-10-19 17:40:10.678','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(46,'9. Ледяной трон',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aa78c4.wav','2025-10-19 17:40:10.686','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(47,'10. Цена Любви',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aa9956.wav','2025-10-19 17:40:10.695','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(48,'11. Последний рассвет',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aab9eb.wav','2025-10-19 17:40:10.703','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(49,'12. Симфония вечности',NULL,3,'/public/uploads/album_covers/68f4f7da160db.png','/public/uploads/full/68f4f84aada42.wav','2025-10-19 17:40:10.711','2025-10-19 17:40:10',NULL,NULL,NULL,NULL,NULL,0,0),
+(50,'1 .Шаги на воде',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f522237d8e1.mp3','2025-10-19 20:38:43.514','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(51,'2. Бал Вечной Тьмы',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f52223823d9.mp3','2025-10-19 20:38:43.541','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(52,'3. Шёпот во тьме',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f52223864e9.mp3','2025-10-19 20:38:43.550','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(53,'4. Сияние в бездне',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f522238856e.mp3','2025-10-19 20:38:43.558','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(54,'5. Последний рассвет',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f522238a5f9.mp3','2025-10-19 20:38:43.567','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(55,'6. Ворон',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f522238c654.mp3','2025-10-19 20:38:43.575','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(56,'7. Аннабель Ли',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f522238e717.mp3','2025-10-19 20:38:43.583','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(57,'8. Мой создатель. История Франкенштейна',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f5222390796.mp3','2025-10-19 20:38:43.592','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(58,'9. Печать Мефистофеля',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f522239280d.mp3','2025-10-19 20:38:43.600','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(59,'10. Маска и тень',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f52223948a7.mp3','2025-10-19 20:38:43.608','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(60,'11. Phantom of the Opera (бонус)',NULL,4,'/public/uploads/album_covers/68f521f7f26c8.webp','/public/uploads/full/68f5222396936.mp3','2025-10-19 20:38:43.617','2025-10-19 20:38:43',NULL,NULL,NULL,NULL,NULL,0,0),
+(61,'1. Скелет под чердаком',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9489c2.wav','2025-10-19 20:45:45.297','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(62,'2. анархист-революционер',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c952c7b.wav','2025-10-19 20:45:45.339','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(63,'3. Грим под гробовой свет',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c95f679.wav','2025-10-19 20:45:45.391','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(64,'4. Баллада о рубщике голов',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c96b73d.wav','2025-10-19 20:45:45.441','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(65,'5. Дом, что смотрит в след',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c977cef.wav','2025-10-19 20:45:45.571','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(66,'6. Гробовщик с гармошкой',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c998736.wav','2025-10-19 20:45:45.625','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(67,'7. Кукловод',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9a8d1b.wav','2025-10-19 20:45:45.692','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(68,'8. Зеркало без отражения',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9b4d65.wav','2025-10-19 20:45:45.741','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(69,'9. Письмо из ниоткуда',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9c51bc.wav','2025-10-19 20:45:45.808','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(70,'10. Охотник За Душами',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9cfb3d.mp3','2025-10-19 20:45:45.851','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(71,'11. Сон в лапах медведя',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9d7ec7.wav','2025-10-19 20:45:45.885','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(72,'12. Полярный адмирал',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9e2fa8.wav','2025-10-19 20:45:45.930','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(73,'13. Театр крови',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523c9ec766.wav','2025-10-19 20:45:45.970','2025-10-19 20:45:45',NULL,NULL,NULL,NULL,NULL,0,0),
+(74,'14. Торговец теней',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523ca00bdc.wav','2025-10-19 20:45:46.003','2025-10-19 20:45:46',NULL,NULL,NULL,NULL,NULL,0,0),
+(75,'15. У тётки Агаты',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523ca03ccc.wav','2025-10-19 20:45:46.016','2025-10-19 20:45:46',NULL,NULL,NULL,NULL,NULL,0,0),
+(76,'16. Хозяйка часов',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523ca05d3d.wav','2025-10-19 20:45:46.024','2025-10-19 20:45:46',NULL,NULL,NULL,NULL,NULL,0,0),
+(77,'17. Театр живых - поппури',NULL,5,'/public/uploads/album_covers/68f5233f80410.png','/public/uploads/full/68f523ca112eb.wav','2025-10-19 20:45:46.071','2025-10-19 20:45:46',NULL,NULL,NULL,NULL,NULL,0,0);
 /*!40000 ALTER TABLE `Track` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -617,4 +664,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-19 17:26:54
+-- Dump completed on 2025-10-19 20:48:59
