@@ -1,0 +1,73 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/gothic-metal/_typography.css
+   ======================================== */
+
+body[data-theme="gothic-metal"] {
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+/* Заголовки */
+body[data-theme="gothic-metal"] h1,
+body[data-theme="gothic-metal"] h2,
+body[data-theme="gothic-metal"] h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    text-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
+}
+
+body[data-theme="gothic-metal"] h1 {
+    font-size: var(--heading-size);
+}
+
+body[data-theme="gothic-metal"] h2 {
+    font-size: var(--h2-size);
+}
+
+body[data-theme="gothic-metal"] h3 {
+    font-size: var(--h3-size);
+    color: var(--accent-color);
+}
+
+/* Абзацы */
+body[data-theme="gothic-metal"] p {
+    margin: 1rem 0;
+    color: var(--text-light);
+}
+
+/* Выделение */
+body[data-theme="gothic-metal"] strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+body[data-theme="gothic-metal"] em {
+    color: var(--accent-color);
+    font-style: italic;
+}
+
+/* Списки */
+body[data-theme="gothic-metal"] ul,
+body[data-theme="gothic-metal"] ol {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+}
+
+body[data-theme="gothic-metal"] li {
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+/* Цитаты */
+body[data-theme="gothic-metal"] blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    color: var(--accent-color);
+    font-style: italic;
+}

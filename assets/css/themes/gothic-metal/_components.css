@@ -1,0 +1,104 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/gothic-metal/_components.css
+   ======================================== */
+
+/* Карточки */
+body[data-theme="gothic-metal"] .card,
+body[data-theme="gothic-metal"] .genre-card,
+body[data-theme="gothic-metal"] .influence-card {
+    background: linear-gradient(135deg, rgba(25, 10, 30, 0.95), rgba(15, 5, 25, 0.9));
+    border: 1px solid rgba(217, 70, 239, 0.3);
+    border-radius: 8px;
+    padding: 25px;
+    transition: all var(--transition);
+    box-shadow: 0 0 15px rgba(217, 70, 239, 0.1);
+}
+
+body[data-theme="gothic-metal"] .card:hover,
+body[data-theme="gothic-metal"] .genre-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 30px rgba(217, 70, 239, 0.3);
+    border-color: var(--primary-color);
+}
+
+/* Page Content */
+body[data-theme="gothic-metal"] .page-content {
+    background: linear-gradient(135deg, rgba(20, 10, 25, 0.95), rgba(15, 5, 20, 0.9));
+    padding: 50px;
+    border-left: 3px solid var(--primary-color);
+    border-radius: 8px;
+    box-shadow: inset 0 0 30px rgba(217, 70, 239, 0.05);
+}
+
+/* Кнопки */
+body[data-theme="gothic-metal"] button:not(.bg-theme-btn):not(.hamburger-menu),
+body[data-theme="gothic-metal"] .btn {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body[data-theme="gothic-metal"] button:not(.bg-theme-btn):not(.hamburger-menu):hover,
+body[data-theme="gothic-metal"] .btn:hover {
+    background: rgba(217, 70, 239, 0.1);
+    box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
+    transform: scale(1.05);
+}
+
+/* Геройский баннер */
+body[data-theme="gothic-metal"] .hero-banner {
+    position: relative;
+    background: linear-gradient(135deg, #1a0a1a, #0a0a0a);
+    border-bottom: 2px solid rgba(217, 70, 239, 0.3);
+}
+
+body[data-theme="gothic-metal"] .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+body[data-theme="gothic-metal"] .hero-button {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+body[data-theme="gothic-metal"] .hero-button:hover {
+    background: rgba(217, 70, 239, 0.15);
+    box-shadow: 0 0 30px var(--primary-color);
+}
+
+/* Секции */
+body[data-theme="gothic-metal"] .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    border-bottom: 2px solid rgba(217, 70, 239, 0.3);
+    padding-bottom: 20px;
+}
+
+/* Сетки */
+body[data-theme="gothic-metal"] .genre-grid,
+body[data-theme="gothic-metal"] .influences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    body[data-theme="gothic-metal"] .page-content {
+        padding: 25px;
+    }
+    
+    body[data-theme="gothic-metal"] .genre-grid {
+        grid-template-columns: 1fr;
+    }
+}

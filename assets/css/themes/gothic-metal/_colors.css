@@ -1,0 +1,51 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/gothic-metal/_colors.css
+   ======================================== */
+
+body[data-theme="gothic-metal"] {
+    background-color: #0a0a0a;
+    color: var(--text-light);
+}
+
+/* Ссылки */
+body[data-theme="gothic-metal"] a {
+    color: var(--accent-color);
+}
+
+body[data-theme="gothic-metal"] a:hover {
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+/* Кнопки */
+body[data-theme="gothic-metal"] button:not(.bg-theme-btn):not(.hamburger-menu) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+body[data-theme="gothic-metal"] button:not(.bg-theme-btn):not(.hamburger-menu):hover {
+    background: rgba(217, 70, 239, 0.1);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+/* Карточки */
+body[data-theme="gothic-metal"] .card,
+body[data-theme="gothic-metal"] .page-content {
+    background: var(--bg-secondary);
+    border-color: var(--primary-color);
+}
+
+/* Формы */
+body[data-theme="gothic-metal"] input,
+body[data-theme="gothic-metal"] textarea,
+body[data-theme="gothic-metal"] select {
+    background: rgba(217, 70, 239, 0.05);
+    border-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+body[data-theme="gothic-metal"] input:focus,
+body[data-theme="gothic-metal"] textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(176, 136, 217, 0.4);
+}

@@ -1,0 +1,383 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/literary-dark/main.css
+   ПОЛНАЯ ТЕМА LITERARY DARK
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:wght@400;600;700&display=swap');
+@import url('./_variables.css');
+@import url('./_colors.css');
+@import url('./_typography.css');
+@import url('./_components.css');
+@import url('./_animations.css');
+
+/* ============ БАЗОВЫЕ СТИЛИ ============ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #1a1714;
+    background-image: 
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%231a1714" width="100" height="100"/><path fill="%23251f19" opacity="0.1" d="M0 0h100v100H0z"/></svg>');
+    font-family: 'Lora', serif;
+    color: #c8b8a8;
+    overflow-x: hidden;
+    line-height: 1.8;
+}
+
+/* ============ ФОНОВЫЕ ЭЛЕМЕНТЫ ============ */
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#background-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    opacity: 0.05;
+    object-fit: cover;
+}
+
+/* ============ КОНТЕЙНЕР ============ */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============ ГЛАВНАЯ НАВИГАЦИЯ ============ */
+
+.site-header {
+    background: linear-gradient(135deg, rgba(20, 17, 14, 0.98), rgba(25, 20, 15, 0.95));
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid #8B7355;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo a {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    color: #d4a574;
+    text-decoration: none;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+    font-weight: 900;
+    font-style: italic;
+}
+
+.logo a:hover {
+    color: #e8b88a;
+    text-shadow: 0 0 20px rgba(212, 165, 116, 0.3);
+    transform: scale(1.02);
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 35px;
+}
+
+.main-nav a {
+    color: #a89878;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    position: relative;
+    padding: 5px 10px;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.main-nav a::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: #d4a574;
+    transition: all 0.3s;
+    transform: translateX(-50%);
+}
+
+.main-nav a:hover {
+    color: #d4a574;
+}
+
+.main-nav a:hover::before {
+    width: 100%;
+}
+
+/* ============ ТЕМА ПЕРЕКЛЮЧАТЕЛЬ ============ */
+
+.theme-switcher-container {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.theme-options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.theme-option {
+    background: transparent;
+    border: 1px solid #8B7355;
+    color: #d4a574;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.5px;
+}
+
+.theme-option:hover {
+    background: rgba(212, 165, 116, 0.1);
+    border-color: #d4a574;
+    box-shadow: inset 0 0 10px rgba(212, 165, 116, 0.1);
+}
+
+.theme-option.active {
+    background: rgba(212, 165, 116, 0.15);
+    border-color: #d4a574;
+    box-shadow: 0 0 10px rgba(212, 165, 116, 0.2);
+}
+
+/* ============ ГЕРОИЧЕСКИЙ БАННЕР ============ */
+
+.hero-banner {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(135deg, #251f19, #1a1714);
+    overflow: hidden;
+    border-bottom: 1px solid #8B7355;
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(212, 165, 116, 0.05) 0%, transparent 70%);
+    animation: literaryGlow 8s ease-in-out infinite;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    color: #d4a574;
+    margin-bottom: 20px;
+    animation: heroTitle 1.2s ease-out;
+    letter-spacing: 2px;
+    font-weight: 900;
+    font-style: italic;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: #a89878;
+    animation: heroSubtitle 1.5s ease-out;
+    font-style: italic;
+    line-height: 1.8;
+}
+
+.hero-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 40px;
+    background: transparent;
+    border: 2px solid #d4a574;
+    color: #d4a574;
+    text-decoration: none;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: inset 0 0 0 0 rgba(212, 165, 116, 0.2);
+    animation: heroButton 1.6s ease-out;
+}
+
+.hero-button:hover {
+    background: rgba(212, 165, 116, 0.1);
+    box-shadow: inset 0 0 20px rgba(212, 165, 116, 0.2);
+    transform: scale(1.05);
+}
+
+/* ============ СОДЕРЖАНИЕ СТРАНИЦЫ ============ */
+
+.page-content {
+    background: linear-gradient(135deg, rgba(25, 20, 18, 0.98), rgba(20, 17, 14, 0.95));
+    padding: 50px;
+    border-radius: 3px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 5;
+    border-left: 3px solid #8B7355;
+    border-top: 1px solid #8B7355;
+    box-shadow: inset 0 0 30px rgba(212, 165, 116, 0.03);
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    color: #d4a574;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    font-weight: 900;
+    font-style: italic;
+}
+
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #d4a574;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #8B7355;
+    padding-bottom: 15px;
+    display: inline-block;
+    letter-spacing: 1px;
+    font-weight: 900;
+}
+
+h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #a89878;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+p {
+    color: #c8b8a8;
+    margin-bottom: 15px;
+    line-height: 1.9;
+    text-align: justify;
+}
+
+/* ============ КАРТОЧКИ И КОМПОНЕНТЫ ============ */
+
+.card, .genre-card, .influence-card {
+    background: linear-gradient(135deg, rgba(30, 25, 20, 0.9), rgba(25, 20, 18, 0.8));
+    border: 1px solid #8B7355;
+    border-radius: 3px;
+    padding: 30px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover, .genre-card:hover, .influence-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(212, 165, 116, 0.2);
+    border-color: #d4a574;
+}
+
+/* ============ ЦИТАТЫ === */
+blockquote {
+    border-left: 3px solid #8B7355;
+    padding-left: 20px;
+    margin: 30px 0;
+    color: #a89878;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+/* ============ ПОДВАЛ ============ */
+
+.site-footer {
+    background: linear-gradient(135deg, rgba(20, 17, 14, 0.98), rgba(25, 20, 15, 0.95));
+    border-top: 2px solid #8B7355;
+    padding: 30px;
+    text-align: center;
+    color: #a89878;
+    margin-top: 60px;
+    font-size: 0.95rem;
+}
+
+/* ============ АДАПТИВНОСТЬ ============ */
+
+@media (max-width: 768px) {
+    .page-content {
+        padding: 25px;
+    }
+    
+    .hero-button {
+        padding: 12px 30px;
+        font-size: 0.95rem;
+    }
+    
+    p {
+        text-align: left;
+    }
+    
+    .theme-option {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .logo a {
+        font-size: 1.4rem;
+    }
+}

@@ -1,0 +1,27 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/gothic-metal/_variables.css
+   ======================================== */
+
+:root[data-theme="gothic-metal"] {
+    /* Цвета */
+    --primary-color: #D946EF;
+    --secondary-color: #6B2C6B;
+    --accent-color: #B088D9;
+    --text-light: #d8d8d8;
+    --text-dark: #a0a0a0;
+    --bg-primary: #0a0a0a;
+    --bg-secondary: rgba(25, 10, 30, 0.9);
+    --border-color: #D946EF;
+    
+    /* Шрифты */
+    --font-heading: 'Cinzel Decorative', serif;
+    --font-body: 'Roboto', sans-serif;
+    
+    /* Размеры */
+    --heading-size: 2.5rem;
+    --h2-size: 2rem;
+    --h3-size: 1.5rem;
+    
+    /* Переходы */
+    --transition: 0.3s ease;
+}

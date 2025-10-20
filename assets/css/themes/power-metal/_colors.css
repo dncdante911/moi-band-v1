@@ -1,0 +1,77 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/power-metal/_colors.css
+   ЦВЕТОВАЯ СХЕМА POWER METAL
+   ======================================== */
+
+/* Применяем переменные к элементам */
+:root[data-theme="power-metal"] {
+    --primary-color: #FFD700;        /* Золото */
+    --secondary-color: #FFA500;      /* Оранжевый */
+    --accent-color: #00BFFF;         /* Небесный голубой */
+    --dark-bg: #0a0a0a;
+    --light-text: #f0f0f0;
+    --card-bg: rgba(20, 20, 40, 0.8);
+    --border-color: #FFD700;
+}
+
+/* Ссылки */
+a {
+    color: var(--accent-color);
+    transition: all 0.3s;
+}
+
+a:hover {
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+/* Кнопки */
+button:not(.hamburger-menu):not(.theme-option) {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    transition: all 0.3s;
+}
+
+button:hover:not(.hamburger-menu):not(.theme-option) {
+    background: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+/* Формы */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background: rgba(255, 215, 0, 0.05);
+    border: 1px solid var(--primary-color);
+    color: var(--light-text);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Таблицы */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 10px;
+}
+
+td {
+    border: 1px solid var(--border-color);
+    padding: 10px;
+}

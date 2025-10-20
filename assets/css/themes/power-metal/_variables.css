@@ -1,0 +1,36 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/power-metal/_variables.css
+   ======================================== */
+
+:root {
+    /* --- ЦВЕТА --- */
+    --primary-color: #FFD700;        /* Золотой */
+    --secondary-color: #FFA500;      /* Оранжевый */
+    --accent-color: #00BFFF;         /* Небесно-голубой */
+    --dark-bg: #0a0a0a;              /* Темный фон */
+    --light-text: #f0f0f0;           /* Светлый текст */
+    --card-bg: rgba(20, 20, 40, 0.8);/* Фон карточек */
+    --border-color: #FFD700;         /* Золотая граница */
+    --hover-glow: rgba(255, 215, 0, 0.5);
+    
+    /* --- ШРИФТЫ --- */
+    --heading-font: 'Cinzel Decorative', serif;
+    --body-font: 'Roboto', sans-serif;
+    --heading-size: 2.5rem;
+    --h2-size: 2rem;
+    --h3-size: 1.5rem;
+    
+    /* --- РАЗМЕРЫ И ОТСТУПЫ --- */
+    --max-width: 1200px;
+    --border-radius: 8px;
+    --transition: 0.3s ease;
+    --shadow-color: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    :root {
+        --heading-size: 1.8rem;
+        --h2-size: 1.5rem;
+        --h3-size: 1.2rem;
+    }
+}

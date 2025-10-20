@@ -1,0 +1,193 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/punk-rock/_animations.css
+   АНИМАЦИИ PUNK ROCK - ЭНЕРГИЧНЫЕ И РЕЗКИЕ
+   ======================================== */
+
+/* === ПАНК СВЕТ === */
+@keyframes punkGlow {
+    0%, 100% {
+        box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+    }
+    50% {
+        box-shadow: inset 0 0 40px rgba(0, 255, 0, 0.2), 0 0 20px rgba(255, 0, 255, 0.1);
+    }
+}
+
+/* === ПАНК ЗАГОЛОВОК === */
+@keyframes punkTitle {
+    0% {
+        opacity: 0;
+        transform: translateY(-60px) rotateZ(-5deg) skewY(5deg);
+    }
+    50% {
+        transform: translateY(0) rotateZ(2deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateZ(0);
+    }
+}
+
+/* === ПАНК ПОДЗАГОЛОВОК === */
+@keyframes punkSubtitle {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) skewX(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) skewX(0);
+    }
+}
+
+/* === ПАНК КНОПКА === */
+@keyframes punkButton {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotateZ(-15deg);
+    }
+    50% {
+        transform: scale(1.1) rotateZ(3deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateZ(0);
+    }
+}
+
+/* === ЭНЕРГИЧНЫЙ ПУЛЬС === */
+@keyframes energyPulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(255, 0, 255, 0.4), inset 0 0 15px rgba(0, 255, 0, 0.2);
+    }
+}
+
+/* === МИГАНИЕ НЕОНА === */
+@keyframes neonFlicker {
+    0%, 100% {
+        opacity: 1;
+    }
+    10% {
+        opacity: 0.95;
+    }
+    20% {
+        opacity: 1;
+    }
+    30% {
+        opacity: 0.9;
+    }
+    40% {
+        opacity: 1;
+    }
+}
+
+/* === СКОШЕННАЯ ТРАНСФОРМАЦИЯ === */
+@keyframes skewShake {
+    0%, 100% {
+        transform: skewX(0);
+    }
+    25% {
+        transform: skewX(-3deg);
+    }
+    75% {
+        transform: skewX(3deg);
+    }
+}
+
+/* === ВЗРЫВ === */
+@keyframes burst {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotateZ(-20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateZ(0);
+    }
+}
+
+/* === ВИБРАЦИЯ === */
+@keyframes vibrate {
+    0%, 100% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+}
+
+/* === ГРАНИЦА МЕРЦАНИЕ === */
+@keyframes borderFlash {
+    0%, 100% {
+        border-color: #00FF00;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    }
+    50% {
+        border-color: #FF00FF;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+    }
+}
+
+/* === ПРИМЕНЕНИЕ АНИМАЦИЙ === */
+
+.hero-content h1 {
+    animation: punkTitle 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.hero-content p {
+    animation: punkSubtitle 1s ease-out;
+}
+
+.hero-button {
+    animation: punkButton 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.hero-banner {
+    animation: punkGlow 4s ease-in-out infinite;
+}
+
+.card, .genre-card, .influence-card {
+    animation: burst 0.7s ease-out;
+}
+
+.card:hover, .genre-card:hover {
+    animation: energyPulse 1.5s ease-in-out infinite;
+}
+
+.theme-option.active {
+    animation: neonFlicker 2s ease-in-out infinite;
+}
+
+.logo a {
+    animation: neonFlicker 3s ease-in-out infinite;
+}
+
+.logo a:hover {
+    animation: vibrate 0.3s ease-in-out;
+}
+
+/* === ПЕРЕХОД МЕЖДУ ТЕМАМИ === */
+body.theme-transition {
+    animation: skewShake 0.4s ease-in-out;
+}
+
+/* === АДАПТИВ АНИМАЦИЙ === */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

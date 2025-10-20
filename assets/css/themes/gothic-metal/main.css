@@ -1,0 +1,47 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/gothic-metal/main.css
+   ======================================== */
+
+@import url('./_variables.css');
+@import url('./_colors.css');
+@import url('./_typography.css');
+@import url('./_components.css');
+@import url('./_animations.css');
+
+/* === ФОН === */
+body[data-theme="gothic-metal"] {
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(107, 44, 107, 0.05) 3px,
+            rgba(107, 44, 107, 0.05) 6px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 3px,
+            rgba(217, 70, 239, 0.03) 3px,
+            rgba(217, 70, 239, 0.03) 6px
+        ),
+        radial-gradient(
+            ellipse 800px 400px at 10% 50%,
+            rgba(217, 70, 239, 0.1) 0%,
+            rgba(107, 44, 107, 0.05) 30%,
+            transparent 70%
+        ),
+        radial-gradient(
+            ellipse 600px 300px at 90% 30%,
+            rgba(139, 0, 139, 0.08) 0%,
+            transparent 60%
+        ),
+        linear-gradient(
+            125deg,
+            #0a0a0a 0%,
+            #15091a 40%,
+            #0a0a0a 100%
+        );
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}

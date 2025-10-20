@@ -1,0 +1,404 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/power-metal/main.css
+   ПОЛНАЯ ТЕМА POWER METAL
+   
+   СТРУКТУРА:
+   1. _variables.css - переменные (уже создан)
+   2. _colors.css - цветовая схема
+   3. _typography.css - шрифты и текст
+   4. _components.css - компоненты (header, footer, cards)
+   5. _animations.css - анимации
+   6. main.css - итоговый файл (этот)
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Roboto:wght@400;700;900&display=swap');
+@import url('./_variables.css');
+@import url('./_colors.css');
+@import url('./_typography.css');
+@import url('./_components.css');
+@import url('./_animations.css');
+
+/* ============ БАЗОВЫЕ СТИЛИ ============ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--dark-bg);
+    font-family: var(--body-font);
+    color: var(--light-text);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* ============ ФОНОВЫЕ ЭЛЕМЕНТЫ ============ */
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#background-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    opacity: 0.15;
+    object-fit: cover;
+}
+
+/* ============ КОНТЕЙНЕР ============ */
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============ ГЛАВНАЯ НАВИГАЦИЯ ============ */
+
+.site-header {
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(40, 20, 0, 0.8));
+    backdrop-filter: blur(10px);
+    border-bottom: 3px solid var(--border-color);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    box-shadow: var(--shadow-color);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo a {
+    font-family: var(--heading-font);
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    text-shadow: 0 0 15px var(--primary-color);
+    transition: all var(--transition);
+}
+
+.logo a:hover {
+    text-shadow: 0 0 25px var(--primary-color), 0 0 35px var(--accent-color);
+    transform: scale(1.05);
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.main-nav a {
+    color: var(--light-text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition);
+    position: relative;
+    padding: 5px 10px;
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width var(--transition);
+}
+
+.main-nav a:hover {
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+/* ============ ТЕМА ПЕРЕКЛЮЧАТЕЛЬ ============ */
+
+.theme-switcher-container {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.theme-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.theme-option {
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.theme-option:hover {
+    background: var(--accent-color);
+    color: var(--dark-bg);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+.theme-option.active {
+    background: var(--primary-color);
+    color: #000;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+}
+
+.theme-label {
+    display: none;
+}
+
+/* ============ ГЕРОИЧЕСКИЙ БАННЕР ============ */
+
+.hero-banner {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(135deg, #1a0a00, #0a0a0a);
+    overflow: hidden;
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+    animation: heroGlow 6s ease-in-out infinite;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content h1 {
+    font-family: var(--heading-font);
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--secondary-color);
+    margin-bottom: 20px;
+    animation: heroTitle 1s ease-out;
+}
+
+.hero-content p {
+    font-size: 1.3rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+    animation: heroSubtitle 1.2s ease-out;
+}
+
+.hero-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 40px;
+    background: transparent;
+    border: 3px solid var(--primary-color);
+    color: var(--primary-color);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    transition: all var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px var(--primary-color);
+    animation: heroButton 1.4s ease-out;
+}
+
+.hero-button:hover {
+    background: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 30px var(--primary-color), 0 0 50px var(--secondary-color);
+    transform: scale(1.1);
+}
+
+/* ============ СОДЕРЖАНИЕ СТРАНИЦЫ ============ */
+
+.page-content {
+    background: linear-gradient(135deg, rgba(20, 10, 0, 0.9), rgba(15, 15, 30, 0.9));
+    padding: 50px;
+    border-radius: var(--border-radius);
+    margin-top: 40px;
+    position: relative;
+    z-index: 5;
+    border-left: 5px solid var(--primary-color);
+    box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.1);
+}
+
+h1 {
+    font-family: var(--heading-font);
+    font-size: clamp(2rem, 5vw, var(--heading-size));
+    color: var(--primary-color);
+    text-shadow: 0 0 15px var(--primary-color);
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-family: var(--heading-font);
+    font-size: var(--h2-size);
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    display: inline-block;
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+h3 {
+    font-family: var(--heading-font);
+    font-size: var(--h3-size);
+    color: var(--accent-color);
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+p {
+    color: var(--light-text);
+    margin-bottom: 15px;
+    line-height: 1.8;
+}
+
+/* ============ КАРТОЧКИ И КОМПОНЕНТЫ ============ */
+
+.card, .genre-card, .influence-card {
+    background: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    transition: all var(--transition);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.card:hover, .genre-card:hover, .influence-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+    border-color: var(--accent-color);
+}
+
+.genre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+/* ============ ПОДВАЛ ============ */
+
+.site-footer {
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(40, 20, 0, 0.8));
+    border-top: 3px solid var(--primary-color);
+    padding: 30px;
+    text-align: center;
+    color: var(--light-text);
+    margin-top: 60px;
+}
+
+/* ============ АДАПТИВНОСТЬ ============ */
+
+@media (max-width: 1024px) {
+    .page-content {
+        padding: 30px;
+    }
+    
+    .theme-option .theme-label {
+        display: inline;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav ul {
+        gap: 15px;
+        flex-direction: column;
+    }
+    
+    .page-content {
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    .hero-button {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+    
+    .theme-option {
+        padding: 5px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .theme-icon {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .theme-switcher-container {
+        position: static;
+        width: 100%;
+        transform: none;
+    }
+    
+    .theme-options {
+        justify-content: center;
+    }
+    
+    .main-nav {
+        width: 100%;
+    }
+}

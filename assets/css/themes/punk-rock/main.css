@@ -1,0 +1,409 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/punk-rock/main.css
+   ПОЛНАЯ ТЕМА PUNK ROCK
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+@import url('./_variables.css');
+@import url('./_colors.css');
+@import url('./_typography.css');
+@import url('./_components.css');
+@import url('./_animations.css');
+
+/* ============ БАЗОВЫЕ СТИЛИ ============ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #1a1a1a;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 255, 0, 0.03) 2px,
+            rgba(0, 255, 0, 0.03) 4px
+        );
+    font-family: 'Space Mono', monospace;
+    color: #e0e0e0;
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+/* ============ ФОНОВЫЕ ЭЛЕМЕНТЫ ============ */
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#background-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    opacity: 0.1;
+    object-fit: cover;
+    mix-blend-mode: screen;
+}
+
+/* ============ КОНТЕЙНЕР ============ */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ============ ГЛАВНАЯ НАВИГАЦИЯ ============ */
+
+.site-header {
+    background: linear-gradient(90deg, #0d0d0d 0%, #1a1a1a 50%, #0d0d0d 100%);
+    backdrop-filter: blur(8px);
+    border-bottom: 4px solid #00FF00;
+    border-image: linear-gradient(90deg, #00FF00, #FF00FF, #00FF00) 1;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), inset 0 -2px 5px rgba(0, 255, 0, 0.1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: #00FF00;
+    text-decoration: none;
+    text-shadow: 2px 2px 0 #FF00FF, 4px 4px 0 #00FFFF;
+    transition: all 0.2s;
+    letter-spacing: 3px;
+    font-weight: 900;
+}
+
+.logo a:hover {
+    text-shadow: 4px 4px 0 #FF00FF, 8px 8px 0 #00FFFF, 12px 12px 0 #FFFF00;
+    transform: scale(1.1) skew(-2deg);
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.main-nav a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s;
+    position: relative;
+    padding: 5px 8px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: 2px solid transparent;
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #00FF00;
+    transition: width 0.2s;
+}
+
+.main-nav a:hover {
+    color: #00FF00;
+    text-shadow: 0 0 5px #00FF00, 2px 2px 0 #FF00FF;
+    border: 2px solid #00FF00;
+    transform: skew(-5deg);
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+/* ============ ТЕМА ПЕРЕКЛЮЧАТЕЛЬ ============ */
+
+.theme-switcher-container {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.theme-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.theme-option {
+    background: transparent;
+    border: 3px solid #00FF00;
+    color: #00FF00;
+    padding: 6px 10px;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.theme-option:hover {
+    background: #00FF00;
+    color: #000;
+    transform: skew(-5deg) scale(1.05);
+    box-shadow: 0 0 10px #00FF00, inset 0 0 10px rgba(255, 0, 255, 0.3);
+}
+
+.theme-option.active {
+    background: #00FF00;
+    color: #000;
+    border-color: #FF00FF;
+    box-shadow: 0 0 15px #00FF00, 0 0 20px #FF00FF;
+    transform: skew(-5deg);
+}
+
+/* ============ ГЕРОИЧЕСКИЙ БАННЕР ============ */
+
+.hero-banner {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(45deg, #0d0d0d, #1a1a1a, #0d0d0d);
+    overflow: hidden;
+    border: 4px solid #00FF00;
+    border-bottom: 6px solid #FF00FF;
+    border-right: 6px solid #00FFFF;
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0, 255, 0, 0.1) 0%, transparent 70%);
+    animation: punkGlow 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 10vw, 5rem);
+    color: #00FF00;
+    text-shadow: 3px 3px 0 #FF00FF, 6px 6px 0 #00FFFF, 9px 9px 0 #FFFF00;
+    margin-bottom: 20px;
+    animation: punkTitle 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    letter-spacing: 4px;
+    font-weight: 900;
+    transform: scaleY(1.1);
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    text-shadow: 2px 2px 0 #FF00FF;
+    animation: punkSubtitle 1s ease-out;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.hero-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 40px;
+    background: #00FF00;
+    border: 4px solid #FF00FF;
+    color: #000;
+    text-decoration: none;
+    border-radius: 0;
+    font-weight: 900;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    box-shadow: 4px 4px 0 #FF00FF, 8px 8px 0 #00FFFF;
+    animation: punkButton 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.hero-button:hover {
+    background: #FF00FF;
+    color: #00FF00;
+    transform: translate(-2px, -2px) skew(-3deg);
+    box-shadow: 6px 6px 0 #00FF00, 12px 12px 0 #00FFFF;
+}
+
+/* ============ СОДЕРЖАНИЕ СТРАНИЦЫ ============ */
+
+.page-content {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(25, 25, 35, 0.9));
+    padding: 50px;
+    border-radius: 0;
+    margin-top: 40px;
+    position: relative;
+    z-index: 5;
+    border: 3px solid #00FF00;
+    border-left: 6px solid #FF00FF;
+    border-right: 6px solid #00FFFF;
+    box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.05), 0 0 20px rgba(0, 255, 0, 0.15);
+}
+
+h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    color: #00FF00;
+    text-shadow: 3px 3px 0 #FF00FF, 6px 6px 0 #00FFFF;
+    margin-bottom: 30px;
+    letter-spacing: 3px;
+    font-weight: 900;
+}
+
+h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: #00FF00;
+    margin-bottom: 20px;
+    border-bottom: 3px dashed #FF00FF;
+    padding-bottom: 10px;
+    display: inline-block;
+    text-shadow: 2px 2px 0 #FF00FF;
+    letter-spacing: 2px;
+    font-weight: 900;
+}
+
+h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: #00FFFF;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+p {
+    color: #e0e0e0;
+    margin-bottom: 15px;
+    line-height: 1.7;
+}
+
+/* ============ КАРТОЧКИ И КОМПОНЕНТЫ ============ */
+
+.card, .genre-card, .influence-card {
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.95), rgba(20, 30, 25, 0.9));
+    border: 3px solid #00FF00;
+    border-radius: 0;
+    padding: 25px;
+    transition: all 0.2s;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+    position: relative;
+}
+
+.card::after, .genre-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px dashed rgba(255, 0, 255, 0.3);
+    pointer-events: none;
+}
+
+.card:hover, .genre-card:hover, .influence-card:hover {
+    transform: translate(-3px, -3px) skew(-2deg);
+    box-shadow: 4px 4px 0 #FF00FF, 0 0 25px rgba(0, 255, 0, 0.5);
+    border-color: #FF00FF;
+}
+
+/* ============ ПОДВАЛ ============ */
+
+.site-footer {
+    background: linear-gradient(90deg, #0d0d0d, #1a1a1a, #0d0d0d);
+    border-top: 4px solid #00FF00;
+    border-bottom: 2px solid #FF00FF;
+    padding: 30px;
+    text-align: center;
+    color: #e0e0e0;
+    margin-top: 60px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* ============ АДАПТИВНОСТЬ ============ */
+
+@media (max-width: 768px) {
+    .page-content {
+        padding: 20px;
+    }
+    
+    .hero-button {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+    
+    .hero-content h1 {
+        text-shadow: 2px 2px 0 #FF00FF, 4px 4px 0 #00FFFF;
+    }
+    
+    .theme-option {
+        padding: 5px 8px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .logo a {
+        font-size: 1.4rem;
+    }
+}

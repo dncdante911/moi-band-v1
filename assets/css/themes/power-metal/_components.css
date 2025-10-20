@@ -1,0 +1,221 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/power-metal/_components.css
+   КОМПОНЕНТЫ И БЛОКИ POWER METAL
+   ======================================== */
+
+/* === КАРТОЧКИ === */
+.card, .genre-card, .influence-card, .philosophy-card {
+    background: linear-gradient(135deg, rgba(20, 20, 40, 0.9), rgba(30, 15, 0, 0.8));
+    border: 2px solid #FFD700;
+    border-radius: 8px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before, .genre-card::before, .influence-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.card:hover, .genre-card:hover, .influence-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
+    border-color: #00BFFF;
+}
+
+.card:hover::before, .genre-card:hover::before {
+    left: 100%;
+}
+
+/* === ИКОНКИ === */
+.genre-icon, .philosophy-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+    filter: drop-shadow(0 0 10px #FFD700);
+}
+
+/* === СЕТКА ЖАНРОВ === */
+.genre-grid, .influences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.genre-card, .influence-card {
+    text-align: center;
+}
+
+.genre-examples {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.genre-examples span {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid #FFD700;
+    color: #FFD700;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* === БЛОКИ ФИЛОСОФИИ === */
+.philosophy-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.philosophy-card {
+    text-align: center;
+    background: rgba(20, 20, 40, 0.9);
+    border: 2px solid #00BFFF;
+}
+
+.philosophy-card:hover {
+    border-color: #FFD700;
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
+}
+
+/* === СЕКЦИИ === */
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #FFD700;
+    margin-bottom: 40px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    border-bottom: 3px solid #FFD700;
+    padding-bottom: 20px;
+}
+
+section {
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 5;
+}
+
+/* === СПИСКИ И УЛ === */
+.influence-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.influence-card li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    color: #f0f0f0;
+}
+
+.influence-card li:last-child {
+    border-bottom: none;
+}
+
+/* === БЛОКИ СООБЩЕНИЙ === */
+.message-box, .alert, .notice {
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 5px solid #FFD700;
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.message-box.success {
+    border-left-color: #00FF00;
+    background: rgba(0, 255, 0, 0.05);
+}
+
+.message-box.error {
+    border-left-color: #FF4444;
+    background: rgba(255, 68, 68, 0.05);
+}
+
+.message-box.warning {
+    border-left-color: #FFA500;
+    background: rgba(255, 165, 0, 0.05);
+}
+
+/* === ССЫЛКИ И КНОПКИ === */
+a.btn, button.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: transparent;
+    border: 2px solid #FFD700;
+    color: #FFD700;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+a.btn:hover, button.btn:hover {
+    background: #FFD700;
+    color: #000;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+    transform: scale(1.05);
+}
+
+/* === НАВИГАЦИЯ НА СТРАНИЦАХ === */
+.breadcrumb {
+    margin-bottom: 20px;
+    color: #f0f0f0;
+}
+
+.breadcrumb a {
+    color: #00BFFF;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.breadcrumb a:hover {
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700;
+}
+
+/* === ГОРИЗОНТАЛЬНЫЙ РАЗДЕЛИТЕЛЬ === */
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #FFD700, transparent);
+    margin: 30px 0;
+}
+
+/* === АДАПТИВ КОМПОНЕНТОВ === */
+@media (max-width: 768px) {
+    .genre-grid, .influences-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .philosophy-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .card, .genre-card, .influence-card {
+        padding: 15px;
+    }
+}

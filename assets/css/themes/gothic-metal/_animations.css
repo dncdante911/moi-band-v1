@@ -1,0 +1,50 @@
+/* ========================================
+   ФАЙЛ: assets/css/themes/gothic-metal/_animations.css
+   ======================================== */
+
+/* Свечение */
+@keyframes gothicGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(217, 70, 239, 0.8);
+    }
+}
+
+/* Появление */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Пульс карточек */
+@keyframes cardPulse {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(217, 70, 239, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(217, 70, 239, 0.3);
+    }
+}
+
+/* Применение */
+body[data-theme="gothic-metal"] h1,
+body[data-theme="gothic-metal"] h2 {
+    animation: gothicGlow 3s ease-in-out infinite;
+}
+
+body[data-theme="gothic-metal"] .card,
+body[data-theme="gothic-metal"] .page-content {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+body[data-theme="gothic-metal"] .card:hover {
+    animation: cardPulse 1.5s ease-in-out infinite;
+}
