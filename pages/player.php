@@ -85,7 +85,8 @@
 <link rel="stylesheet" href="/assets/css/epic-player.css">
 
 <!-- Подключаем скрипт -->
-<script src="/assets/js/epic-player.js"></script>
+ <script src="/assets/js/epic-player-mobile-fix.js"></script>
+ <script src="/assets/js/epic-player.js"></script>
 
 <script>
 // Инициализация плеера при загрузке страницы

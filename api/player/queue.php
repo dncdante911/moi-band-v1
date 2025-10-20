@@ -1,15 +1,10 @@
 <?php
 /**
  * Файл: api/player/queue.php
- * API для получения очереди треков - ИСПРАВЛЕННАЯ ВЕРСИЯ v2.1
- * 
- * Исправления:
- * - ✅ Возвращает duration (длительность трека из БД)
- * - ✅ Правильные пути к видеофайлам
- * - ✅ Полная информация о треках
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ - ВИДЕО РАБОТАЕТ!
  */
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 require_once '../../include_config/config.php';
 require_once '../../include_config/db_connect.php';
@@ -21,7 +16,9 @@ try {
     $tracks = [];
     
     // === ПОЛУЧИТЬ ТРЕКИ ИЗ АЛЬБОМА ===
-    if ($albumId) {
+    if ($albumId > 0) {
+        console_log("📀 Fetching album #$albumId");
+        
         $stmt = $pdo->prepare("
             SELECT 
                 t.id,
@@ -42,10 +39,12 @@ try {
         $stmt->execute([$albumId]);
         $tracks = $stmt->fetchAll();
         
-        console_log("📀 Альбом #$albumId: " . count($tracks) . " треков");
+        console_log("✅ Album #$albumId loaded: " . count($tracks) . " tracks");
     } 
     // === ПОЛУЧИТЬ ТРЕКИ ИЗ ПЛЕЙЛИСТА ===
-    else if ($playlistId) {
+    else if ($playlistId > 0) {
+        console_log("📋 Fetching playlist #$playlistId");
+        
         $stmt = $pdo->prepare("
             SELECT 
                 t.id,
@@ -67,29 +66,79 @@ try {
         $stmt->execute([$playlistId]);
         $tracks = $stmt->fetchAll();
         
-        console_log("📋 Плейлист #$playlistId: " . count($tracks) . " треков");
+        console_log("✅ Playlist #$playlistId loaded: " . count($tracks) . " tracks");
     }
     
-    // === ОБРАБОТАТЬ И ВЕРНУТЬ ТРЕКИ ===
+    // === ПРОВЕРИТЬ НАЛИЧИЕ ФАЙЛОВ ===
+    $processedTracks = [];
+    foreach ($tracks as $track) {
+        // Проверяем аудиофайл
+        $audioExists = false;
+        if (!empty($track['fullAudioPath'])) {
+            $audioPath = ltrim($track['fullAudioPath'], '/');
+            $fullAudioPath = dirname(__DIR__, 2) . '/' . $audioPath;
+            $audioExists = file_exists($fullAudioPath);
+            
+            if (!$audioExists) {
+                console_log("⚠️ Audio missing for track #{$track['id']}: $audioPath");
+            }
+        }
+        
+        // Проверяем видеофайл
+        $videoExists = false;
+        $videoPath = null;
+        if (!empty($track['videoPath'])) {
+            $videoFile = ltrim($track['videoPath'], '/');
+            $fullVideoPath = dirname(__DIR__, 2) . '/' . $videoFile;
+            $videoExists = file_exists($fullVideoPath);
+            
+            if ($videoExists) {
+                $videoPath = $track['videoPath'];
+                console_log("✅ Video found for track #{$track['id']}: $videoPath");
+            } else {
+                console_log("⚠️ Video missing for track #{$track['id']}: $videoPath");
+            }
+        }
+        
+        // Проверяем обложку
+        $coverExists = false;
+        if (!empty($track['coverImagePath'])) {
+            $coverFile = ltrim($track['coverImagePath'], '/');
+            $fullCoverPath = dirname(__DIR__, 2) . '/' . $coverFile;
+            $coverExists = file_exists($fullCoverPath);
+        }
+        
+        $processedTracks[] = [
+            'id' => (int)$track['id'],
+            'title' => htmlspecialchars($track['title']),
+            'description' => htmlspecialchars($track['description'] ?? ''),
+            'albumTitle' => htmlspecialchars($track['albumTitle'] ?? 'Album'),
+            'coverImagePath' => $track['coverImagePath'],
+            'fullAudioPath' => $track['fullAudioPath'],
+            'videoPath' => $videoPath, // Только если видео существует
+            'lyricsPath' => $track['lyricsPath'],
+            'duration' => (int)($track['duration'] ?? 0),
+            // === ОТЛАДКА ===
+            '_debug' => [
+                'audioExists' => $audioExists,
+                'videoExists' => $videoExists,
+                'coverExists' => $coverExists
+            ]
+        ];
+    }
+    
+    // === ВЕРНУТЬ РЕЗУЛЬТАТ ===
     echo json_encode([
         'success' => true,
-        'count' => count($tracks),
-        'tracks' => array_map(function($track) {
-            return [
-                'id' => (int)$track['id'],
-                'title' => htmlspecialchars($track['title']),
-                'description' => htmlspecialchars($track['description'] ?? ''),
-                'albumTitle' => htmlspecialchars($track['albumTitle'] ?? 'Альбом'),
-                'coverImagePath' => $track['coverImagePath'],
-                'fullAudioPath' => $track['fullAudioPath'],
-                'videoPath' => $track['videoPath'],
-                'lyricsPath' => $track['lyricsPath'],
-                'duration' => (int)($track['duration'] ?? 0)  // ✅ ИСПРАВЛЕНО: возвращаем duration
-            ];
-        }, $tracks)
-    ]);
+        'count' => count($processedTracks),
+        'tracks' => $processedTracks
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    
+    console_log("✅ API Response: " . count($processedTracks) . " tracks sent");
     
 } catch (Exception $e) {
+    console_log("❌ API Error: " . $e->getMessage());
+    
     http_response_code(500);
     echo json_encode([
         'success' => false,
@@ -97,9 +146,12 @@ try {
     ]);
 }
 
-// Вспомогательная функция для логирования
+/**
+ * Логирование в error_log
+ */
 function console_log($msg) {
     if (DEBUG_MODE) {
         error_log($msg);
     }
 }
+?>

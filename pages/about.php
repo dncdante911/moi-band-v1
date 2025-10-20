@@ -3,7 +3,6 @@
  * Файл: pages/about.php
  * Красиво оформленная страница о проекте
  */
-
 $page_css = '/assets/css/about.css';
 require_once __DIR__ . '/../include_config/header.php';
 ?>

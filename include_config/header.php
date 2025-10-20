@@ -1,7 +1,7 @@
 <?php 
 /**
  * Файл: include_config/header.php
- * ИСПРАВЛЕННАЯ ВЕРСИЯ - правильное подключение стилей
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ с мобильной поддержкой
  */
 
 require_once __DIR__ . '/config.php'; 
@@ -10,18 +10,22 @@ require_once __DIR__ . '/config.php';
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <title><?= htmlspecialchars(SITE_NAME) ?></title>
     
     <!-- === ОСНОВНЫЕ СТИЛИ === -->
     <link rel="stylesheet" href="/assets/css/main.css">
     
-    <!-- === EPIC THEME - НОВЫЙ БОЕВОЙ ДИЗАЙН === -->
+    <!-- === EPIC THEME - БОЕВОЙ ДИЗАЙН === -->
     <link rel="stylesheet" href="/assets/css/header-epic.css">
     <link rel="stylesheet" href="/assets/css/albums-epic.css">
     <link rel="stylesheet" href="/assets/css/epic-home.css">
     
-    <!-- === СТАРЫЕ СТИЛИ (базовые) === -->
+    <!-- === КЛАССИЧЕСКИЕ СТИЛИ (базовые) === -->
     <link rel="stylesheet" href="/assets/css/auth.css">
     <link rel="stylesheet" href="/assets/css/chat.css">
     <link rel="stylesheet" href="/assets/css/about.css">
@@ -30,8 +34,10 @@ require_once __DIR__ . '/config.php';
     <!-- === АДАПТИВНЫЕ СТИЛИ === -->
     <link rel="stylesheet" href="/assets/css/responsive.css">
     
+    <!-- === УНИВЕРСАЛЬНЫЕ МОБИЛЬНЫЕ СТИЛИ (ОЧЕНЬ ВАЖНО!) === -->
+    <link rel="stylesheet" href="/assets/css/mobile-universal.css">
+    
     <!-- === СТРАНИЦА-СПЕЦИФИЧНЫЕ СТИЛИ === -->
-    <!-- Если на странице задан $page_css, подключаем его (он переопределит общие) -->
     <?php if (isset($page_css)): ?>
         <link rel="stylesheet" href="<?= htmlspecialchars($page_css) ?>">
     <?php endif; ?>
@@ -42,13 +48,32 @@ require_once __DIR__ . '/config.php';
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- === ВНЕШНИЕ БИБЛИОТЕКИ === -->
-    <!-- Particles.js для анимированного фона (если используется) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- === МОБИЛЬНЫЕ ИСПРАВЛЕНИЯ ПЛЕЕРА === -->
+    <script src="/assets/js/epic-player-mobile-fix.js"></script>
+    
+    <style>
+        /* Быстрые исправления для всех устройств */
+        * {
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Плавный скролл */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 <body>
     <!-- === ФОНОВЫЕ ЭЛЕМЕНТЫ === -->
     <div id="particles-js"></div>
-    <video autoplay muted loop id="background-video">
+    <video autoplay muted loop id="background-video" style="display: none;">
         <source src="/assets/videos/background_video.mp4" type="video/mp4">
     </video>
 
@@ -60,10 +85,10 @@ require_once __DIR__ . '/config.php';
             </div>
             
             <!-- Бургер меню для мобильных -->
-            <button class="hamburger-menu" id="hamburger">☰</button>
+            <button class="hamburger-menu" id="hamburger" aria-label="Открыть меню" aria-expanded="false">☰</button>
             
             <!-- Навигация -->
-            <nav class="main-nav" id="mainNav">
+            <nav class="main-nav" id="mainNav" aria-label="Главная навигация">
                 <ul>
                     <li><a href="/">🏠 Главная</a></li>
                     <li><a href="/pages/albums.php">📀 Альбомы</a></li>

@@ -26,8 +26,8 @@ require_once __DIR__ . '/../include_config/header.php';
     
     <div class="hero-content">
         <h1 class="hero-title">🎸 ХРОНИКИ ЗАБЫТЫХ МИРОВ</h1>
-        <p class="hero-subtitle">Power Metal • Gothic Metal • Punk Rock</p>
-        <p class="hero-description">Эпическое путешествие через легенды, которые мир забыл</p>
+        <p class="hero-subtitle">Power Metal</p>
+        <p class="hero-description">Новый альбом. Эпическое путешествие через легенды, которые мир забыл</p>
         
         <div class="hero-buttons">
             <a href="#albums" class="hero-button primary">▶️ Слушать альбом</a>
