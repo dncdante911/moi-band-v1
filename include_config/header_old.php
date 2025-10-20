@@ -1,4 +1,11 @@
-<?php require_once 'config.php'; ?>
+<?php 
+/**
+ * Файл: include_config/header.php
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ - правильное подключение стилей
+ */
+
+require_once __DIR__ . '/config.php'; 
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,30 +13,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(SITE_NAME) ?></title>
     
-    <!-- Основные стили -->
+    <!-- === ОСНОВНЫЕ СТИЛИ === -->
     <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/index.css">
-    <link rel="stylesheet" href="/assets/css/power-metal.css">
+    
+    <!-- === EPIC THEME - НОВЫЙ БОЕВОЙ ДИЗАЙН === -->
+    <link rel="stylesheet" href="/assets/css/header-epic.css">
+    <link rel="stylesheet" href="/assets/css/albums-epic.css">
+    <link rel="stylesheet" href="/assets/css/epic-home.css">
+    
+    <!-- === СТАРЫЕ СТИЛИ (базовые) === -->
+    <link rel="stylesheet" href="/assets/css/auth.css">
+    <link rel="stylesheet" href="/assets/css/chat.css">
+    <link rel="stylesheet" href="/assets/css/about.css">
+    <link rel="stylesheet" href="/assets/css/post.css">
+    
+    <!-- === АДАПТИВНЫЕ СТИЛИ === -->
     <link rel="stylesheet" href="/assets/css/responsive.css">
     
-    <!-- Дополнительный CSS если есть -->
+    <!-- === СТРАНИЦА-СПЕЦИФИЧНЫЕ СТИЛИ === -->
+    <!-- Если на странице задан $page_css, подключаем его (он переопределит общие) -->
     <?php if (isset($page_css)): ?>
         <link rel="stylesheet" href="<?= htmlspecialchars($page_css) ?>">
     <?php endif; ?>
     
-    <!-- Шрифты Google -->
+    <!-- === ШРИФТЫ GOOGLE === -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- === ВНЕШНИЕ БИБЛИОТЕКИ === -->
+    <!-- Particles.js для анимированного фона (если используется) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
-    <!-- Фоновые элементы -->
+    <!-- === ФОНОВЫЕ ЭЛЕМЕНТЫ === -->
     <div id="particles-js"></div>
     <video autoplay muted loop id="background-video">
         <source src="/assets/videos/background_video.mp4" type="video/mp4">
     </video>
 
-    <!-- Шапка сайта -->
+    <!-- === ШАПКА САЙТА === -->
     <header class="site-header">
         <div class="container header-container">
             <div class="logo">
@@ -48,6 +71,7 @@
                     <li><a href="/pages/news.php">📰 Новости</a></li>
                     <li><a href="/pages/gallery.php">🖼️ Галерея</a></li>
                     <li><a href="/pages/contact.php">✉️ Контакты</a></li>
+                    
                     <?php 
                     // Проверяем авторизацию
                     if (isset($_SESSION['user_id'])): 
@@ -64,5 +88,5 @@
         </div>
     </header>
 
-    <!-- Основной контент -->
+    <!-- === ОСНОВНОЙ КОНТЕНТ === -->
     <main class="main-content">

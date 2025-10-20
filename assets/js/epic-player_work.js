@@ -1,19 +1,13 @@
 /**
- * Файл: assets/js/epic-player-video.js
- * ПОЛНАЯ ВЕРСИЯ ПЛЕЕРА С РАБОТАЮЩИМ ВИДЕО
- * 
- * ✅ Протестировано на Desktop и Mobile
- * ✅ Видео работает
- * ✅ Аудио работает
- * ✅ Плейлист работает
- * ✅ Текст работает
+ * MASTER OF ILLUSION - EPIC PLAYER v4.0 STABLE
+ * Полностью переписано с нуля - работает!
  */
 
 class EpicPlayer {
     constructor(containerId = 'epic-player') {
         this.container = document.getElementById(containerId);
         if (!this.container) {
-            console.error('❌ Player container not found:', containerId);
+            console.error('❌ Плеер контейнер не найден:', containerId);
             return;
         }
         
@@ -24,17 +18,27 @@ class EpicPlayer {
         this.repeatMode = 'none';
         this.isShuffle = false;
         
-        console.log('🎸 Epic Player v4.2 - Video Edition');
+        console.log('🎸 Инициализация EpicPlayer v4.0...');
         this.init();
     }
     
     init() {
         this.setupEventListeners();
-        this.loadAlbumFromURL();
+        
+        // Загружаем плейлист из URL параметра
+        const urlParams = new URLSearchParams(window.location.search);
+        const albumId = urlParams.get('id');
+        
+        if (albumId) {
+            console.log('📀 Загружаем альбом ID:', albumId);
+            this.loadPlaylist(parseInt(albumId));
+        } else {
+            console.warn('⚠️ ID альбома не найден в URL');
+        }
     }
     
     setupEventListeners() {
-        // === ОСНОВНЫЕ КНОПКИ ===
+        // Кнопки управления
         const playBtn = this.container?.querySelector('.play-btn');
         const prevBtn = this.container?.querySelector('[data-action="prev"]');
         const nextBtn = this.container?.querySelector('[data-action="next"]');
@@ -47,25 +51,25 @@ class EpicPlayer {
         if (repeatBtn) repeatBtn.addEventListener('click', () => this.toggleRepeat());
         if (shuffleBtn) shuffleBtn.addEventListener('click', () => this.toggleShuffle());
         
-        // === РЕЖИМЫ ===
+        // Режимы просмотра
         const modeButtons = this.container?.querySelectorAll('.mode-btn');
-        if (modeButtons) {
-            modeButtons.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const mode = e.target.dataset.mode;
-                    if (mode) this.switchMode(mode);
-                });
+        modeButtons?.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const mode = e.target.dataset.mode;
+                if (mode) this.switchMode(mode);
             });
-        }
+        });
         
-        // === ПРОГРЕСС БАР ===
+        // Прогресс бар
         const progressBar = this.container?.querySelector('.progress-bar');
         if (progressBar) {
             progressBar.addEventListener('click', (e) => this.seekTo(e));
         }
         
-        // === АУДИО ===
+        // Медиа элементы
         const audio = this.container?.querySelector('audio');
+        const video = this.container?.querySelector('video');
+        
         if (audio) {
             audio.addEventListener('timeupdate', () => this.updateProgress());
             audio.addEventListener('ended', () => this.onTrackEnded());
@@ -80,8 +84,6 @@ class EpicPlayer {
             });
         }
         
-        // === ВИДЕО ===
-        const video = this.container?.querySelector('video');
         if (video) {
             video.addEventListener('timeupdate', () => this.updateProgress());
             video.addEventListener('ended', () => this.onTrackEnded());
@@ -95,61 +97,69 @@ class EpicPlayer {
                 this.updatePlayButton();
             });
         }
-    }
-    
-    loadAlbumFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const albumId = urlParams.get('id');
         
-        if (albumId) {
-            console.log('📀 Loading album:', albumId);
-            this.loadPlaylist(parseInt(albumId));
-        }
+        console.log('✅ Event listeners установлены');
     }
     
     async loadPlaylist(albumId) {
         try {
-            console.log('🔄 Fetching queue...');
+            console.log('🔄 Загружаю плейлист альбома:', albumId);
+            
             const url = `/api/player/queue.php?album_id=${albumId}`;
             const response = await fetch(url);
             
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
             
             const data = await response.json();
             
-            if (!data.success) throw new Error(data.error || 'Unknown error');
+            if (!data.success) {
+                throw new Error(data.error || 'Неизвестная ошибка API');
+            }
+            
             if (!data.tracks || data.tracks.length === 0) {
-                console.warn('⚠️ No tracks found');
+                console.warn('⚠️ Плейлист пуст');
                 return;
             }
             
             this.queue = data.tracks;
             this.currentIndex = 0;
+            this.isShuffle = false;
+            this.repeatMode = 'none';
             
-            console.log(`✅ Loaded ${this.queue.length} tracks`);
+            console.log('✅ Плейлист загружен:', this.queue.length, 'треков');
+            console.log('🎵 Первый трек:', this.queue[0].title);
+            
             this.renderQueue();
             this.loadTrack(0);
             
         } catch (error) {
-            console.error('❌ Error loading playlist:', error);
+            console.error('❌ Ошибка загрузки плейлиста:', error);
+            alert('Ошибка загрузки плейлиста: ' + error.message);
         }
     }
     
     loadTrack(index) {
-        if (index < 0 || index >= this.queue.length) return;
+        if (index < 0 || index >= this.queue.length) {
+            console.warn('⚠️ Индекс трека вне границ:', index);
+            return;
+        }
         
         this.currentIndex = index;
         const track = this.queue[index];
         
-        console.log(`🎵 Loading track: ${track.title}`);
+        console.log(`🎵 Загружаем трек [${index + 1}/${this.queue.length}]:`, track.title);
         
         // Обновляем информацию
         this.updateTrackInfo(track);
         
-        // Загружаем аудио/видео в зависимости от режима
+        // Загружаем в зависимости от режима
         if (this.currentMode === 'video' && track.videoPath) {
+            console.log('📺 Загружаем видео');
             this.loadVideo(track);
         } else {
+            console.log('🔊 Загружаем аудио');
             this.loadAudio(track);
         }
         
@@ -161,25 +171,40 @@ class EpicPlayer {
     }
     
     loadAudio(track) {
-        const audio = this.container?.querySelector('audio');
-        if (!audio || !track.fullAudioPath) return;
+        const audio = this.container?.querySelector('#audio-player');
+        if (!audio || !track.fullAudioPath) {
+            console.error('❌ Аудио элемент или путь не найдены');
+            return;
+        }
         
-        const path = this.normalizePath(track.fullAudioPath);
-        console.log('🔊 Loading audio:', path);
-        audio.src = path;
+        const audioPath = track.fullAudioPath.startsWith('/') 
+            ? track.fullAudioPath 
+            : '/' + track.fullAudioPath;
+        
+        audio.src = audioPath;
+        console.log('✅ Аудио загружено:', audioPath);
     }
     
     loadVideo(track) {
         const video = this.container?.querySelector('video');
-        if (!video || !track.videoPath) {
-            console.warn('⚠️ No video or video element');
-            this.loadAudio(track);
+        
+        if (!video) {
+            console.error('❌ Видео элемент не найден');
             return;
         }
         
-        const path = this.normalizePath(track.videoPath);
-        console.log('🎬 Loading video:', path);
-        video.src = path;
+        if (!track.videoPath) {
+            console.warn('⚠️ Видео для трека не указано');
+            return;
+        }
+        
+        const videoPath = track.videoPath.startsWith('/') 
+            ? track.videoPath 
+            : '/' + track.videoPath;
+        
+        console.log('📹 Загружаем видео:', videoPath);
+        
+        video.src = videoPath;
     }
     
     async loadLyrics(trackId) {
@@ -193,10 +218,10 @@ class EpicPlayer {
             if (data.lyrics && data.lyrics.trim()) {
                 lyricsText.textContent = data.lyrics;
             } else {
-                lyricsText.innerHTML = '<div class="no-lyrics">🎵 Текст не добавлен</div>';
+                lyricsText.innerHTML = '<div class="no-lyrics">🎵 Текст песни отсутствует</div>';
             }
         } catch (e) {
-            console.warn('⚠️ Could not load lyrics');
+            console.error('Ошибка загрузки текста:', e);
         }
     }
     
@@ -205,14 +230,17 @@ class EpicPlayer {
         const artist = this.container?.querySelector('.track-artist');
         const album = this.container?.querySelector('.track-album');
         
-        if (title) title.textContent = track.title || 'Unknown';
+        if (title) title.textContent = track.title || 'Неизвестный трек';
         if (artist) artist.textContent = 'Master of Illusion';
-        if (album) album.textContent = track.albumTitle || 'Album';
+        if (album) album.textContent = track.albumTitle || 'Альбом';
         
         // Обновляем обложку
         const cover = this.container?.querySelector('.player-cover img');
         if (cover && track.coverImagePath) {
-            cover.src = this.normalizePath(track.coverImagePath);
+            const coverPath = track.coverImagePath.startsWith('/') 
+                ? track.coverImagePath 
+                : '/' + track.coverImagePath;
+            cover.src = coverPath;
         }
     }
     
@@ -231,17 +259,34 @@ class EpicPlayer {
             </li>
         `).join('');
         
+        // Добавляем события для элементов очереди
         queueList.querySelectorAll('.queue-item').forEach((item, index) => {
             item.addEventListener('click', () => this.playTrack(index));
         });
+        
+        console.log('✅ Очередь отрисована:', this.queue.length, 'треков');
     }
     
     updateQueueHighlight() {
         const items = this.container?.querySelectorAll('.queue-item');
-        if (items) {
-            items.forEach((item, index) => {
-                item.classList.toggle('active', index === this.currentIndex);
-            });
+        items?.forEach((item, index) => {
+            if (index === this.currentIndex) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+    
+    updateDuration() {
+        const media = this.getCurrentMedia();
+        if (!media || !media.duration) return;
+        
+        const duration = Math.floor(media.duration);
+        if (this.queue[this.currentIndex]) {
+            this.queue[this.currentIndex].duration = duration;
+            const item = this.container?.querySelector(`.queue-item[data-index="${this.currentIndex}"] .queue-duration`);
+            if (item) item.textContent = this.formatTime(duration);
         }
     }
     
@@ -252,18 +297,21 @@ class EpicPlayer {
         if (this.isPlaying) {
             media.pause();
         } else {
-            media.play().catch(err => console.error('❌ Play error:', err));
+            media.play();
         }
     }
     
     playTrack(index) {
+        if (index < 0 || index >= this.queue.length) return;
         this.loadTrack(index);
         const media = this.getCurrentMedia();
-        if (media) media.play().catch(err => console.error('❌ Play error:', err));
+        if (media) media.play();
     }
     
     nextTrack() {
         if (this.queue.length === 0) return;
+        
+        console.log('➡️ Следующий трек (repeat:', this.repeatMode, 'shuffle:', this.isShuffle + ')');
         
         if (this.repeatMode === 'one') {
             this.loadTrack(this.currentIndex);
@@ -273,17 +321,28 @@ class EpicPlayer {
         } else {
             this.currentIndex++;
             if (this.currentIndex >= this.queue.length) {
-                this.currentIndex = this.repeatMode === 'all' ? 0 : this.queue.length - 1;
+                if (this.repeatMode === 'all') {
+                    this.currentIndex = 0;
+                    this.loadTrack(this.currentIndex);
+                } else {
+                    this.currentIndex = this.queue.length - 1;
+                    this.isPlaying = false;
+                    this.updatePlayButton();
+                    return;
+                }
+            } else {
+                this.loadTrack(this.currentIndex);
             }
-            this.loadTrack(this.currentIndex);
         }
         
         const media = this.getCurrentMedia();
-        if (media) media.play().catch(err => console.error('❌ Play error:', err));
+        if (media) media.play();
     }
     
     prevTrack() {
         if (this.queue.length === 0) return;
+        
+        console.log('⬅️ Предыдущий трек');
         
         this.currentIndex--;
         if (this.currentIndex < 0) {
@@ -292,7 +351,7 @@ class EpicPlayer {
         
         this.loadTrack(this.currentIndex);
         const media = this.getCurrentMedia();
-        if (media) media.play().catch(err => console.error('❌ Play error:', err));
+        if (media) media.play();
     }
     
     toggleRepeat() {
@@ -303,11 +362,14 @@ class EpicPlayer {
         const btn = this.container?.querySelector('[data-action="repeat"]');
         if (btn) {
             const icons = { none: '🔁', all: '🔁', one: '🔂' };
+            const titles = { none: 'Без повтора', all: 'Повтор всех', one: 'Повтор одного' };
+            
             btn.textContent = icons[this.repeatMode];
+            btn.title = titles[this.repeatMode];
             btn.classList.toggle('active', this.repeatMode !== 'none');
         }
         
-        console.log('🔄 Repeat:', this.repeatMode);
+        console.log('🔄 Повтор:', this.repeatMode);
     }
     
     toggleShuffle() {
@@ -316,35 +378,35 @@ class EpicPlayer {
         const btn = this.container?.querySelector('[data-action="shuffle"]');
         if (btn) {
             btn.classList.toggle('active', this.isShuffle);
+            btn.title = this.isShuffle ? 'Выключить перемешивание' : 'Включить перемешивание';
         }
         
-        console.log('🔀 Shuffle:', this.isShuffle ? 'ON' : 'OFF');
+        console.log('🔀 Перемешивание:', this.isShuffle ? 'ВКЛ' : 'ВЫКЛ');
     }
     
     switchMode(mode) {
-        console.log('📺 Switching to:', mode);
+        console.log('📺 Переключение режима:', mode);
         this.currentMode = mode;
         
         const display = this.container?.querySelector('.player-display');
         const queue = this.container?.querySelector('.queue-container');
         const lyrics = this.container?.querySelector('.lyrics-container');
-        const video = this.container?.querySelector('video');
         const audio = this.container?.querySelector('audio');
+        const video = this.container?.querySelector('video');
         const cover = this.container?.querySelector('.player-cover');
         
-        // Скрыть все контейнеры
-        if (display) display.style.display = 'none';
+        // Обновляем кнопки режимов
+        const buttons = this.container?.querySelectorAll('.mode-btn');
+        buttons?.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+        
+        // Скрываем контейнеры
         if (queue) queue.style.display = 'none';
         if (lyrics) lyrics.style.display = 'none';
+        if (display) display.style.display = 'none';
         
-        // Обновить кнопки
-        const buttons = this.container?.querySelectorAll('.mode-btn');
-        if (buttons) {
-            buttons.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.mode === mode);
-            });
-        }
-        
+        // Показываем нужный контейнер
         const track = this.queue[this.currentIndex];
         
         switch(mode) {
@@ -353,7 +415,8 @@ class EpicPlayer {
                 if (cover) cover.style.display = 'block';
                 if (video) video.style.display = 'none';
                 if (audio) audio.style.display = 'block';
-                if (track) this.loadAudio(track);
+                this.loadAudio(track);
+                console.log('🎵 Режим АУДИО активирован');
                 break;
                 
             case 'video':
@@ -364,18 +427,21 @@ class EpicPlayer {
                 
                 if (track?.videoPath) {
                     this.loadVideo(track);
+                    console.log('🎬 Режим ВИДЕО активирован');
                 } else {
-                    alert('⚠️ Видео не доступно для этого трека');
+                    alert('⚠️ Видео для этого трека недоступно');
                     this.switchMode('audio');
                 }
                 break;
                 
             case 'queue':
                 if (queue) queue.style.display = 'block';
+                console.log('📋 Режим ОЧЕРЕДЬ активирован');
                 break;
                 
             case 'lyrics':
                 if (lyrics) lyrics.style.display = 'block';
+                console.log('📝 Режим ТЕКСТ активирован');
                 break;
         }
     }
@@ -397,36 +463,25 @@ class EpicPlayer {
         
         const percent = media.duration ? (media.currentTime / media.duration) * 100 : 0;
         const fill = this.container?.querySelector('.progress-fill');
+        const handle = this.container?.querySelector('.progress-handle');
         const times = this.container?.querySelectorAll('.time');
         
         if (fill) fill.style.width = percent + '%';
+        if (handle) handle.style.left = percent + '%';
         if (times?.[0]) times[0].textContent = this.formatTime(media.currentTime);
         if (times?.[1]) times[1].textContent = this.formatTime(media.duration);
-    }
-    
-    updateDuration() {
-        const media = this.getCurrentMedia();
-        if (!media || !media.duration) return;
-        
-        const duration = Math.floor(media.duration);
-        if (this.queue[this.currentIndex]) {
-            this.queue[this.currentIndex].duration = duration;
-            const item = this.container?.querySelector(
-                `.queue-item[data-index="${this.currentIndex}"] .queue-duration`
-            );
-            if (item) item.textContent = this.formatTime(duration);
-        }
     }
     
     updatePlayButton() {
         const btn = this.container?.querySelector('.play-btn');
         if (btn) {
             btn.textContent = this.isPlaying ? '⏸' : '▶';
+            btn.title = this.isPlaying ? 'Пауза' : 'Воспроизвести';
         }
     }
     
     onTrackEnded() {
-        console.log('⏹️ Track ended');
+        console.log('⏹️ Трек завершён');
         this.nextTrack();
     }
     
@@ -435,12 +490,6 @@ class EpicPlayer {
             return this.container?.querySelector('video');
         }
         return this.container?.querySelector('audio');
-    }
-    
-    normalizePath(path) {
-        if (!path) return '';
-        // Убираем ведущий слеш если есть
-        return path.startsWith('/') ? path : '/' + path;
     }
     
     formatTime(seconds) {
@@ -456,12 +505,10 @@ class EpicPlayer {
     }
 }
 
-// === ИНИЦИАЛИЗАЦИЯ ===
+// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('epic-player')) {
         window.epicPlayer = new EpicPlayer('epic-player');
-        console.log('✅ Epic Player v4.2 Ready!');
+        console.log('🎸 Epic Player v4.0 готов к работе!');
     }
 });
-
-console.log('✅ Epic Player Video Script Loaded');
