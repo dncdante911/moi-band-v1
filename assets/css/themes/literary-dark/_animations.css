@@ -1,6 +1,6 @@
 /**
- * GOTHIC METAL - _animations.css
- * Анимации с готическими эффектами
+ * LITERARY DARK - _animations.css
+ * Плавные, мягкие анимации
  */
 
 @keyframes fadeInDown {
@@ -67,52 +67,52 @@ h2 {
     animation: zoomIn 0.5s ease;
 }
 
-@keyframes floatGothic {
+@keyframes floatLit {
     0%, 100% {
         transform: translateY(0px);
     }
     50% {
-        transform: translateY(-8px);
+        transform: translateY(-6px);
     }
 }
 
 .logo a {
-    animation: floatGothic 4s ease-in-out infinite;
+    animation: floatLit 3.5s ease-in-out infinite;
 }
 
-@keyframes glowPulseGothic {
+@keyframes glowPulseLit {
     0% {
-        text-shadow: 0 0 10px rgba(157, 0, 255, 0.4);
-        box-shadow: 0 0 15px rgba(157, 0, 255, 0.3);
+        text-shadow: 0 0 8px rgba(212, 165, 116, 0.3);
+        box-shadow: 0 0 12px rgba(212, 165, 116, 0.2);
     }
     50% {
-        text-shadow: 0 0 20px rgba(157, 0, 255, 0.7);
-        box-shadow: 0 0 25px rgba(157, 0, 255, 0.6);
+        text-shadow: 0 0 16px rgba(212, 165, 116, 0.5);
+        box-shadow: 0 0 20px rgba(212, 165, 116, 0.4);
     }
     100% {
-        text-shadow: 0 0 10px rgba(157, 0, 255, 0.4);
-        box-shadow: 0 0 15px rgba(157, 0, 255, 0.3);
+        text-shadow: 0 0 8px rgba(212, 165, 116, 0.3);
+        box-shadow: 0 0 12px rgba(212, 165, 116, 0.2);
     }
 }
 
 h1, h2, h3 {
-    animation: glowPulseGothic 3s ease-in-out infinite;
+    animation: glowPulseLit 2.5s ease-in-out infinite;
 }
 
-@keyframes strongGlowGothic {
+@keyframes strongGlowLit {
     0% {
-        box-shadow: 0 0 20px rgba(157, 0, 255, 0.5);
+        box-shadow: 0 0 15px rgba(212, 165, 116, 0.3);
     }
     50% {
-        box-shadow: 0 0 35px rgba(217, 70, 239, 0.8), 0 0 50px rgba(157, 0, 255, 0.6);
+        box-shadow: 0 0 30px rgba(212, 165, 116, 0.5), 0 0 40px rgba(199, 168, 104, 0.4);
     }
     100% {
-        box-shadow: 0 0 20px rgba(157, 0, 255, 0.5);
+        box-shadow: 0 0 15px rgba(212, 165, 116, 0.3);
     }
 }
 
 button:hover, .btn:hover {
-    animation: strongGlowGothic 0.5s ease;
+    animation: strongGlowLit 0.5s ease;
 }
 
 @keyframes underlineExpand {
@@ -130,30 +130,6 @@ button:hover, .btn:hover {
 
 .main-nav a:hover::after {
     animation: underlineExpand var(--transition);
-}
-
-@keyframes cardGlow {
-    0%, 100% {
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 10px rgba(157, 0, 255, 0.2);
-    }
-    50% {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 25px rgba(157, 0, 255, 0.4);
-    }
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.loading, .spinner {
-    animation: spin 1s linear infinite;
 }
 
 @keyframes wave {
@@ -174,12 +150,25 @@ button:hover, .btn:hover {
         opacity: 1;
     }
     50%, 99% {
-        opacity: 0.3;
+        opacity: 0.4;
     }
 }
 
 .blink {
     animation: blink 1.5s infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading, .spinner {
+    animation: spin 1s linear infinite;
 }
 
 @keyframes slideInFromLeft {
@@ -209,10 +198,10 @@ button:hover, .btn:hover {
         transform: translateX(0);
     }
     25% {
-        transform: translateX(-5px);
+        transform: translateX(-4px);
     }
     75% {
-        transform: translateX(5px);
+        transform: translateX(4px);
     }
 }
 

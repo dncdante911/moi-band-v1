@@ -22,6 +22,9 @@ $tracks = $stmt->fetchAll();
     <a href="albums_list.php">Управление альбомами</a>
     <span class="admin-nav-separator">|</span>
     <a href="news_list.php">Управление новостями</a>
+       <a href="news_list.php">Управление новостями</a>
+       <span class="admin-nav-separator">|</span>
+   <a href="gallery_list.php">Управление галереей</a>
 </div>
 
         <a href="add_track.php" class="add-button">+ Добавить новый трек</a>

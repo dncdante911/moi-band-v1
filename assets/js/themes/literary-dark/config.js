@@ -1,29 +1,29 @@
 /**
- * GOTHIC METAL - config.js
- * JS конфиг готической темы
+ * LITERARY DARK - config.js
+ * JS конфиг классической литературной темы
  */
 
-const GothicMetalThemeConfig = {
-    name: 'gothic-metal',
-    displayName: '🦇 Gothic Metal',
-    description: 'Мрачный готический дизайн с фиолетовыми акцентами',
+const LiteraryDarkThemeConfig = {
+    name: 'literary-dark',
+    displayName: '📚 Literary Dark',
+    description: 'Классический литературный дизайн с коричневыми тонами',
     version: '1.0.0',
     
     colors: {
-        primary: '#9D00FF',
-        secondary: '#6A0DAD',
-        accent: '#D946EF',
-        dark: '#0f0515',
-        darkPanel: '#1a0f2e',
-        lightText: '#d0d0e0',
-        border: '#9D00FF'
+        primary: '#D4A574',
+        secondary: '#8B7355',
+        accent: '#C7A868',
+        dark: '#1a1714',
+        darkPanel: '#251f19',
+        lightText: '#e8e4d8',
+        border: '#D4A574'
     },
     
     shadows: {
-        glowPurple: '0 0 15px rgba(157, 0, 255, 0.6)',
-        glowStrong: '0 0 25px rgba(217, 70, 239, 0.8)',
-        shadowColor: '0 0 20px rgba(157, 0, 255, 0.3)',
-        shadowDark: '0 10px 30px rgba(0, 0, 0, 0.8)'
+        glowWarm: '0 0 15px rgba(212, 165, 116, 0.5)',
+        glowStrong: '0 0 25px rgba(212, 165, 116, 0.6)',
+        shadowColor: '0 0 20px rgba(212, 165, 116, 0.25)',
+        shadowDark: '0 10px 30px rgba(0, 0, 0, 0.7)'
     },
     
     transitions: {
@@ -53,20 +53,20 @@ const GothicMetalThemeConfig = {
     },
     
     backgroundPatterns: {
-        gothic: `
-            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(157, 0, 255, 0.02) 2px, rgba(157, 0, 255, 0.02) 4px),
-            radial-gradient(ellipse at 20% 50%, rgba(157, 0, 255, 0.1) 0%, transparent 50%),
-            linear-gradient(135deg, #0f0515 0%, #1a0f2e 50%, #0f0515 100%)
+        literary: `
+            repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(212, 165, 116, 0.02) 1px, rgba(212, 165, 116, 0.02) 2px),
+            repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(139, 115, 85, 0.02) 1px, rgba(139, 115, 85, 0.02) 2px),
+            linear-gradient(130deg, #1a1714 0%, #251f19 50%, #1a1714 100%)
         `
     },
     
     icons: {
-        theme: '🦇',
-        dark: '🌙',
-        mystery: '🔮',
-        bat: '🦇',
-        skull: '💀',
-        cross: '†'
+        theme: '📚',
+        book: '📖',
+        quill: '🖋️',
+        lamp: '🕯️',
+        scroll: '📜',
+        star: '⭐'
     },
     
     selectors: {
@@ -91,7 +91,7 @@ const GothicMetalThemeConfig = {
             easing: 'ease'
         },
         glow: {
-            duration: 3000,
+            duration: 2500,
             easing: 'ease-in-out'
         }
     },
@@ -102,9 +102,9 @@ const GothicMetalThemeConfig = {
         }
     },
     
-    applyGlow: function(element, glowType = 'glowPurple') {
+    applyGlow: function(element, glowType = 'glowWarm') {
         if (element) {
-            element.style.boxShadow = this.shadows[glowType] || this.shadows.glowPurple;
+            element.style.boxShadow = this.shadows[glowType] || this.shadows.glowWarm;
             element.style.transition = `box-shadow ${this.transitions.default}`;
         }
     },
@@ -114,30 +114,30 @@ const GothicMetalThemeConfig = {
     },
     
     log: function(message) {
-        console.log(`%c🦇 [Gothic Metal] ${message}`, 'color: #9D00FF; font-weight: bold;');
+        console.log(`%c📚 [Literary Dark] ${message}`, 'color: #D4A574; font-weight: bold;');
     }
 };
 
-GothicMetalThemeConfig.log('Конфиг загружен успешно');
+LiteraryDarkThemeConfig.log('Конфиг загружен успешно');
 
-window.GothicMetalThemeConfig = GothicMetalThemeConfig;
+window.LiteraryDarkThemeConfig = LiteraryDarkThemeConfig;
 
 (function() {
     'use strict';
     
     document.addEventListener('DOMContentLoaded', function() {
-        GothicMetalThemeConfig.log('Инициализация завершена');
+        LiteraryDarkThemeConfig.log('Инициализация завершена');
         
         document.querySelectorAll('h1, h2, h3').forEach(heading => {
-            heading.style.textShadow = `0 0 15px ${GothicMetalThemeConfig.colors.primary}80`;
+            heading.style.textShadow = `0 0 15px ${LiteraryDarkThemeConfig.colors.primary}60`;
         });
         
         document.querySelectorAll('button, .btn').forEach(button => {
             button.addEventListener('mouseenter', function() {
-                this.style.boxShadow = GothicMetalThemeConfig.shadows.glowStrong;
+                this.style.boxShadow = LiteraryDarkThemeConfig.shadows.glowStrong;
             });
             button.addEventListener('mouseleave', function() {
-                this.style.boxShadow = GothicMetalThemeConfig.shadows.shadowColor;
+                this.style.boxShadow = LiteraryDarkThemeConfig.shadows.shadowColor;
             });
         });
     });

@@ -1,19 +1,13 @@
-/* ========================================
-   ФАЙЛ: assets/js/simple-theme-switcher.js
-   КУДА: Замени свой старый файл на этот
-   
-   ОБНОВЛЕННАЯ ВЕРСИЯ - загружает фоны И CSS темы
-   ✅ Фоны + цветовые стили вместе
-   ✅ Меняет data-theme на body
-   ✅ Загружает CSS файлы тем
-   ======================================== */
+/**
+ * ФАЙЛ: assets/js/theme-manager-pro.js
+ * ФИНАЛЬНАЯ ИСПРАВЛЕННАЯ ВЕРСИЯ - РАБОТАЕТ С ПЕРЕМЕННЫМИ
+ */
 
 (function() {
     'use strict';
 
     const STORAGE_KEY = 'site_bg_theme';
     
-    // Темы с фонами И CSS файлами
     const BG_THEMES = {
         'default': {
             name: 'Default',
@@ -22,7 +16,7 @@
                 color: '#0a0a0a',
                 image: 'none'
             },
-            css: null // Default без CSS темы
+            css: null
         },
         'power-metal': {
             name: 'Power Metal ⚔️',
@@ -43,13 +37,12 @@
             name: 'Gothic Metal 🦇',
             icon: '🦇',
             bg: {
-                color: '#0a0a0a',
+                color: '#0f0515',
                 image: `
                     repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(107, 44, 107, 0.05) 3px, rgba(107, 44, 107, 0.05) 6px),
-                    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(217, 70, 239, 0.03) 3px, rgba(217, 70, 239, 0.03) 6px),
-                    radial-gradient(ellipse 800px 400px at 10% 50%, rgba(217, 70, 239, 0.1) 0%, rgba(107, 44, 107, 0.05) 30%, transparent 70%),
-                    radial-gradient(ellipse 600px 300px at 90% 30%, rgba(139, 0, 139, 0.08) 0%, transparent 60%),
-                    linear-gradient(125deg, #0a0a0a 0%, #15091a 40%, #0a0a0a 100%)
+                    radial-gradient(ellipse at 20% 30%, rgba(157, 0, 255, 0.12) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 70%, rgba(106, 13, 173, 0.08) 0%, transparent 50%),
+                    linear-gradient(135deg, #0f0515 0%, #1a0f2e 50%, #0f0515 100%)
                 `
             },
             css: '/assets/css/themes/gothic-metal/main.css',
@@ -59,14 +52,13 @@
             name: 'Punk Rock 🤘',
             icon: '🤘',
             bg: {
-                color: '#1a1a1a',
+                color: '#0a0a0a',
                 image: `
-                    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 0, 0.04) 2px, rgba(0, 255, 0, 0.04) 4px),
-                    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 0, 255, 0.03) 2px, rgba(255, 0, 255, 0.03) 4px),
-                    radial-gradient(ellipse 900px 450px at 15% 60%, rgba(0, 255, 0, 0.12) 0%, rgba(0, 255, 0, 0.05) 30%, transparent 70%),
-                    radial-gradient(ellipse 800px 400px at 85% 40%, rgba(255, 0, 255, 0.1) 0%, transparent 60%),
-                    radial-gradient(ellipse 600px 300px at 50% 90%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
-                    linear-gradient(110deg, #1a1a1a 0%, #0d0d1a 50%, #1a1a1a 100%)
+                    repeating-linear-gradient(0deg, rgba(255, 0, 255, 0.02) 0px, rgba(255, 0, 255, 0.02) 2px, transparent 2px, transparent 4px),
+                    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0, 255, 255, 0.02) 3px, rgba(0, 255, 255, 0.02) 6px),
+                    radial-gradient(ellipse at 30% 40%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(ellipse at 70% 60%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+                    linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)
                 `
             },
             css: '/assets/css/themes/punk-rock/main.css',
@@ -90,26 +82,21 @@
         }
     };
 
-    // Получить сохраненную тему
     function getSavedTheme() {
         return localStorage.getItem(STORAGE_KEY) || 'default';
     }
 
-    // Загрузить CSS файл темы
     function loadThemeCSS(themeName) {
         const theme = BG_THEMES[themeName];
         if (!theme || !theme.css) {
-            // Удаляем старый CSS если переходим на default
             const oldLink = document.querySelector('link[data-theme-css]');
             if (oldLink) oldLink.remove();
             return;
         }
 
-        // Удаляем старый CSS если есть
         const oldLink = document.querySelector('link[data-theme-css]');
         if (oldLink) oldLink.remove();
 
-        // Загружаем новый CSS
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = theme.css;
@@ -117,49 +104,46 @@
         document.head.appendChild(link);
     }
 
-    // Применить тему (фон + стили)
     function applyBackground(themeName) {
         const theme = BG_THEMES[themeName];
         if (!theme) return;
 
         const body = document.body;
+        const html = document.documentElement;
         
         // Применяем фон
         body.style.backgroundColor = theme.bg.color;
         body.style.backgroundImage = theme.bg.image;
         body.style.backgroundAttachment = 'fixed';
-        body.style.backgroundSize = '100% 100%';
-        body.style.backgroundPosition = '0 0';
-        body.style.transition = 'background 0.5s ease';
+        body.style.backgroundSize = 'cover';
+        body.style.backgroundPosition = 'center';
 
-        // Применяем data-theme для CSS стилей
+        // ВАЖНО: Устанавливаем data-theme на ОБА элемента
         if (theme.dataTheme) {
+            html.setAttribute('data-theme', theme.dataTheme);
             body.setAttribute('data-theme', theme.dataTheme);
             loadThemeCSS(themeName);
         } else {
+            html.removeAttribute('data-theme');
             body.removeAttribute('data-theme');
-            loadThemeCSS(themeName); // Удалит CSS если default
+            loadThemeCSS(themeName);
         }
 
         localStorage.setItem(STORAGE_KEY, themeName);
-        console.log('Theme applied:', themeName);
     }
 
-    // Создать кнопку и меню
     function createThemeSwitcher() {
         if (document.querySelector('.bg-theme-switcher')) return;
 
-        // Контейнер
         const container = document.createElement('div');
         container.className = 'bg-theme-switcher';
 
-        // Кнопка
         const button = document.createElement('button');
         button.className = 'bg-theme-btn';
         button.innerHTML = '🎨';
         button.title = 'Выбрать тему';
+        button.setAttribute('aria-label', 'Выбрать тему');
 
-        // Меню
         const menu = document.createElement('div');
         menu.className = 'bg-theme-menu';
 
@@ -173,42 +157,43 @@
         
         menu.innerHTML = html;
 
-        // Добавляем в контейнер
         container.appendChild(button);
         container.appendChild(menu);
         document.body.appendChild(container);
 
-        // Стили
         addStyles();
 
-        // Обработчики
         button.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             menu.classList.toggle('active');
+            button.classList.toggle('active');
         });
 
         menu.querySelectorAll('.bg-menu-item').forEach(item => {
             item.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
+                
                 const themeName = item.dataset.theme;
                 applyBackground(themeName);
                 
-                // Обновляем активный элемент
                 menu.querySelectorAll('.bg-menu-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
                 
-                // Закрываем меню
                 menu.classList.remove('active');
+                button.classList.remove('active');
             });
         });
 
-        // Закрыть меню при клике снаружи
-        document.addEventListener('click', () => {
-            menu.classList.remove('active');
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) {
+                menu.classList.remove('active');
+                button.classList.remove('active');
+            }
         });
     }
 
-    // CSS для кнопки и меню
     function addStyles() {
         if (document.querySelector('style[data-bg-theme-switcher]')) return;
 
@@ -217,115 +202,138 @@
         style.textContent = `
             .bg-theme-switcher {
                 position: fixed;
-                bottom: 20px;
-                right: 20px;
+                bottom: 30px;
+                right: 30px;
                 z-index: 9999;
+                font-family: Arial, sans-serif;
             }
 
             .bg-theme-btn {
-                width: 50px;
-                height: 50px;
+                width: 55px;
+                height: 55px;
                 border-radius: 50%;
-                border: none;
-                background: rgba(0, 0, 0, 0.6);
-                color: white;
-                font-size: 1.5rem;
+                background: linear-gradient(135deg, #FFD700, #FF8C00);
+                border: 3px solid #FFD700;
+                color: #000;
+                font-size: 28px;
                 cursor: pointer;
-                transition: all 0.3s;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(5px);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
             }
 
-            .bg-theme-btn:hover {
-                background: rgba(0, 0, 0, 0.8);
-                transform: scale(1.1);
-                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+            .bg-theme-btn:hover,
+            .bg-theme-btn.active {
+                transform: scale(1.15);
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
             }
 
             .bg-theme-menu {
                 position: absolute;
-                bottom: 70px;
+                bottom: 65px;
                 right: 0;
-                background: rgba(0, 0, 0, 0.9);
-                border: 1px solid rgba(255, 215, 0, 0.3);
-                border-radius: 8px;
+                background: rgba(15, 15, 15, 0.98);
+                border: 2px solid #FFD700;
+                border-radius: 10px;
                 padding: 8px;
+                min-width: 200px;
                 display: none;
                 flex-direction: column;
                 gap: 4px;
-                backdrop-filter: blur(10px);
-                min-width: 180px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+                animation: slideUp 0.2s ease;
             }
 
             .bg-theme-menu.active {
                 display: flex;
             }
 
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
             .bg-menu-item {
-                padding: 10px 12px;
+                width: 100%;
+                padding: 12px 15px;
                 background: transparent;
-                border: 1px solid rgba(255, 215, 0, 0.2);
-                color: #ccc;
+                border: 1.5px solid #555;
+                color: #ddd;
                 text-align: left;
                 cursor: pointer;
-                border-radius: 4px;
-                transition: all 0.2s;
-                font-size: 0.95rem;
+                border-radius: 5px;
+                font-size: 15px;
+                transition: all 0.15s ease;
+                font-weight: 500;
             }
 
             .bg-menu-item:hover {
-                background: rgba(255, 215, 0, 0.1);
-                border-color: rgba(255, 215, 0, 0.5);
+                background: rgba(255, 215, 0, 0.12);
                 color: #FFD700;
+                border-color: #FFD700;
+                transform: translateX(5px);
             }
 
             .bg-menu-item.active {
                 background: rgba(255, 215, 0, 0.2);
-                border-color: #FFD700;
                 color: #FFD700;
+                border-color: #FFD700;
                 font-weight: bold;
             }
 
             @media (max-width: 768px) {
                 .bg-theme-switcher {
-                    bottom: 10px;
-                    right: 10px;
+                    bottom: 20px;
+                    right: 20px;
                 }
 
                 .bg-theme-btn {
-                    width: 45px;
-                    height: 45px;
-                    font-size: 1.2rem;
+                    width: 48px;
+                    height: 48px;
+                    font-size: 24px;
                 }
 
                 .bg-theme-menu {
-                    bottom: 60px;
+                    bottom: 55px;
+                    min-width: 170px;
+                }
+
+                .bg-menu-item {
+                    padding: 10px 12px;
+                    font-size: 14px;
                 }
             }
         `;
         document.head.appendChild(style);
     }
 
-    // Инициализация
     function init() {
-        // Применяем сохраненную тему
-        applyBackground(getSavedTheme());
-        
-        // Создаем кнопку и меню
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createThemeSwitcher);
-        } else {
-            createThemeSwitcher();
-        }
-
-        console.log('✅ Theme Switcher ready');
+        createThemeSwitcher();
+        const savedTheme = getSavedTheme();
+        applyBackground(savedTheme);
     }
 
-    // Запуск
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
+
+    window.ThemeManager = {
+        setTheme: applyBackground,
+        getTheme: getSavedTheme,
+        getAvailableThemes: () => BG_THEMES
+    };
+
 })();
+
+console.log('%c🎸 Master of Illusion - All 4 Themes Ready!', 'color: #FFD700; font-size: 14px; font-weight: bold;');
