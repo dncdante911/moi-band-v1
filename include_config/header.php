@@ -10,23 +10,22 @@ require_once __DIR__ . '/config.php';
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
+ <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(SITE_NAME) ?></title>
     
-    <!-- ✅ ОСНОВНЫЕ СТИЛИ (вернули) -->
+    <!-- ✅ ОСНОВНЫЕ СТИЛИ (базис) -->
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/responsive.css">
     <link rel="stylesheet" href="/assets/css/mobile-universal.css">
     
-    <!-- ✅ ОСТАЛЬНЫЕ СТИЛИ -->
+    <!-- ✅ ОСТАЛЬНЫЕ СПЕЦИФИЧНЫЕ СТИЛИ -->
     <link rel="stylesheet" href="/assets/css/auth.css">
     <link rel="stylesheet" href="/assets/css/chat.css">
     <link rel="stylesheet" href="/assets/css/about.css">
     <link rel="stylesheet" href="/assets/css/post.css">
-    
-    <!-- ✅ ЭПИЧЕСКИЕ СТИЛИ (если есть) -->
     <link rel="stylesheet" href="/assets/css/header-epic.css">
+    <link rel="stylesheet" href="/assets/css/albums.css">
     <link rel="stylesheet" href="/assets/css/albums-epic.css">
     <link rel="stylesheet" href="/assets/css/epic-home.css">
     
@@ -37,6 +36,69 @@ require_once __DIR__ . '/config.php';
     
     <!-- === БИБЛИОТЕКИ === -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- === ДИАГНОСТИКА ТЕМ === -->
+<script>
+    // Добавь этот скрипт в конец header.php ПЕРЕД </head>
+    
+    console.log('='.repeat(50));
+    console.log('🎨 ДИАГНОСТИКА ТЕМ MASTER OF ILLUSION');
+    console.log('='.repeat(50));
+    
+    // 1. Проверяем localStorage
+    const savedTheme = localStorage.getItem('site_bg_theme');
+    console.log(`📁 Сохраненная тема: ${savedTheme || 'default'}`);
+    
+    // 2. Проверяем загруженные CSS
+    const stylesheets = document.styleSheets;
+    console.log(`\n📚 Всего загруженных CSS: ${stylesheets.length}`);
+    
+    let themeCSS = false;
+    for (let i = 0; i < stylesheets.length; i++) {
+        const href = stylesheets[i].href;
+        if (href && href.includes('/assets/css/themes/')) {
+            console.log(`✅ Найден CSS тема: ${href}`);
+            themeCSS = true;
+        }
+    }
+    
+    if (!themeCSS && savedTheme !== 'default') {
+        console.warn('⚠️ ОШИБКА: CSS тема НЕ загружена! Проверь пути!');
+    }
+    
+    // 3. Проверяем CSS переменные
+    console.log(`\n🎨 CSS переменные:`);
+    const root = document.documentElement;
+    const primaryColor = getComputedStyle(root).getPropertyValue('--primary-color');
+    const secondaryColor = getComputedStyle(root).getPropertyValue('--secondary-color');
+    
+    console.log(`--primary-color: ${primaryColor.trim() || 'НЕ НАЙДЕНА'}`);
+    console.log(`--secondary-color: ${secondaryColor.trim() || 'НЕ НАЙДЕНА'}`);
+    
+    // 4. Проверяем data-theme атрибут
+    console.log(`\n🔍 data-theme на body: ${document.body.getAttribute('data-theme') || 'не установлен'}`);
+    
+    // 5. Проверяем ThemeManager
+    if (window.ThemeManager) {
+        console.log(`\n✅ ThemeManager загружен`);
+        console.log(`Доступные темы:`, Object.keys(window.ThemeManager.getAvailableThemes()));
+    } else {
+        console.warn('⚠️ ThemeManager НЕ загружен!');
+    }
+    
+    // 6. Проверяем кнопку переключения
+    setTimeout(() => {
+        const btn = document.querySelector('.bg-theme-btn');
+        if (btn) {
+            console.log(`\n✅ Кнопка переключения найдена`);
+        } else {
+            console.warn('⚠️ Кнопка переключения НЕ найдена!');
+        }
+    }, 500);
+    
+    console.log('='.repeat(50));
+</script>
+    
     </head>
 <body>
     <!-- === ФОНОВЫЕ ЭЛЕМЕНТЫ === -->
