@@ -1,55 +1,107 @@
 <?php
-// Файл: pages/post.php - ОБНОВЛЕННАЯ ВЕРСИЯ
+// Файл: pages/post.php
 
-// Подключаем шапку и конфиги
-$page_css = '/assets/css/post.css';
 require_once '../include_config/header.php';
-require_once '../include_config/db_connect.php';
 
-// Проверяем, что ID новости передан и является числом
+// Проверяем ID поста
 if (!isset($_GET['id']) || !filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
-    header('Location: /index.php');
-    exit;
+    $postId = null;
+} else {
+    $postId = (int)$_GET['id'];
 }
-$postId = (int)$_GET['id'];
 
-// Ищем новость в базе по ее ID
-$stmt = $pdo->prepare("SELECT * FROM Posts WHERE id = ?");
-$stmt->execute([$postId]);
-$post = $stmt->fetch();
+$post = null;
 
-// Если новость с таким ID не найдена
+// Получаем пост из БД
+if ($postId) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM Posts WHERE id = ?");
+        $stmt->execute([$postId]);
+        $post = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Database error: " . $e->getMessage());
+        $post = null;
+    }
+}
+
+// Если пост не найден
 if (!$post) {
-    // Используем нашу общую структуру для страницы с ошибкой
-    echo "<div class='container page-content'><section><h2>Ошибка 404</h2><p>Новость не найдена.</p></section></div>";
+    ?>
+    <div class="container">
+        <div class="error-404">
+            <h2>⚠️ Ошибка 404</h2>
+            <p>Пост не найден или удален.</p>
+            <a href="/pages/news.php" class="btn-back">← Вернуться к новостям</a>
+        </div>
+    </div>
+    <?php
     require_once '../include_config/footer.php';
     exit;
 }
 ?>
 
-<div class="punk-banner">
-  <h1 style="text-shadow: 3px 3px #FF00FF, -2px -2px #00FFFF;">RAW ENERGY</h1>
+<!-- === BANNER === -->
+<div class="post-banner">
+    <h1 class="post-title"><?= htmlspecialchars($post['title']) ?></h1>
+    <p class="post-meta">
+        <span>📅 <?= date('d F Y', strtotime($post['createdAt'])) ?></span>
+        <span>⏱️ ~5 мин чтения</span>
+    </p>
 </div>
 
-<div class="container page-content">
-    <article class="full-post">
-        <h1><?= htmlspecialchars($post['title']) ?></h1>
+<!-- === MAIN CONTENT === -->
+<div class="container">
+    <div class="post-wrapper">
         
-        <p class="post-date"><?= date('d F Y', strtotime($post['createdAt'])) ?></p>
-        
-        <?php if (!empty($post['imageUrl'])): ?>
-            <img class="post-image" src="/<?= htmlspecialchars(ltrim($post['imageUrl'], '/')) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
-        <?php endif; ?>
+        <!-- MAIN -->
+        <div class="post-main">
+            <article class="post-content-box">
+                <?php if (!empty($post['imageUrl'])): ?>
+                    <figure class="post-image">
+                        <img src="<?= htmlspecialchars($post['imageUrl']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
+                    </figure>
+                <?php endif; ?>
 
-        <div class="post-content">
-            <?= nl2br(htmlspecialchars($post['content'])) ?>
+                <div class="post-body">
+                    <?= nl2br(htmlspecialchars($post['content'])) ?>
+                </div>
+
+                <div class="post-tags">
+                    <span class="tag">⚡ Пост</span>
+                    <span class="tag">🎸 Master of Illusion</span>
+                </div>
+            </article>
+
+            <a href="/pages/news.php" class="btn-back-bottom">← Вернуться к новостям</a>
         </div>
 
-        <a href="/" class="back-link">&laquo; Вернуться на главную</a>
-    </article>
+        <!-- SIDEBAR -->
+        <aside class="post-sidebar">
+            <div class="sidebar-box about-box">
+                <h3>⚡ Master of Illusion</h3>
+                <p>Музыкальный проект Power Metal / Hard & Heavy / Punk Rock. Композиции с SUNO, тексты авторские.</p>
+                <a href="/pages/about.php" class="sidebar-link">Узнать больше →</a>
+            </div>
+
+            <div class="sidebar-box">
+                <h3>📂 Категории</h3>
+                <ul class="category-list">
+                    <li><a href="/pages/news.php">📰 Все новости</a></li>
+                    <li><a href="/pages/albums.php">📀 Альбомы</a></li>
+                    <li><a href="/pages/gallery.php">🖼️ Галерея</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-box">
+                <h3>🔥 Рекомендуем</h3>
+                <ul class="category-list">
+                    <li><a href="/pages/albums.php">📀 Слушать альбомы</a></li>
+                    <li><a href="/pages/gallery.php">🖼️ Галерея</a></li>
+                    <li><a href="/pages/chat.php">💬 Чат</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
 </div>
 
-<?php
-// Подключаем подвал сайта
-require_once '../include_config/footer.php';
-?>
+<?php require_once '../include_config/footer.php'; ?>
