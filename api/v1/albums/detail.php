@@ -2,8 +2,11 @@
 /**
  * Файл: api/v1/albums/detail.php
  * API Endpoint для получения деталей альбома со всеми треками
- * GET /api/v1/albums/detail.php?id=1
+ * GET /api/v1/albums/detail.php?album_id=1
  */
+
+// Временно понижаем уровень ошибок, чтобы мелкие Notice/Warning не портили JSON.
+// Они будут логироваться в файл, но не выводиться на экран.
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -20,6 +23,11 @@ require_once '../../../include_config/db_connect.php';
 require_once '../../../include_config/APIResponse.php';
 require_once '../../../include_config/APILogger.php';
 
+if (defined('DEBUG_MODE') && DEBUG_MODE) {
+    ini_set('display_errors', 0); 
+    // Ошибки по-прежнему будут логироваться, но не будут печататься в ответ
+}
+
 $logger = new APILogger();
 
 try {
@@ -30,74 +38,54 @@ try {
     }
     
     // === ПОЛУЧИТЬ ID АЛЬБОМА ===
-    $album_id = intval($_GET['id'] ?? 0);
+    $raw_album_id = $_GET['album_id'] ?? $_GET['id'] ?? 0;
+    $album_id = intval($raw_album_id); 
     
     $logger->logRequest('/api/v1/albums/detail', 'GET', null, ['album_id' => $album_id]);
     
+    // Валидация ID
     if ($album_id < 1) {
-        $logger->logValidationError('/api/v1/albums/detail', ['Invalid album ID']);
-        APIResponse::validationError(['id' => 'Invalid album ID']);
+        $logger->logValidationError('/api/v1/albums/detail', 'Invalid album ID', ['raw_id' => $raw_album_id]);
+        APIResponse::error('Invalid album ID', 400); 
     }
     
-    // === ПОЛУЧИТЬ АЛЬБОМ ===
-    $stmt = $pdo->prepare("
-        SELECT 
-            id,
-            title,
-            description,
-            coverImagePath,
-            releaseDate,
-            createdAt,
-            updatedAt
-        FROM Albums
-        WHERE id = ?
-    ");
-    
-    $stmt->execute([$album_id]);
-    $album = $stmt->fetch(PDO::FETCH_ASSOC);
+    // === ПОЛУЧЕНИЕ ДЕТАЛЕЙ АЛЬБОМА ===
+    $stmt = $pdo->prepare("SELECT * FROM Albums WHERE id = :id LIMIT 1"); 
+    $stmt->execute(['id' => $album_id]);
+    $album = $stmt->fetch();
     
     if (!$album) {
-        $logger->logError('/api/v1/albums/detail', 'Album not found', 404, null, ['album_id' => $album_id]);
-        APIResponse::notFound('Album not found');
+        $logger->logError('/api/v1/albums/detail', 'Album not found', 404, ['album_id' => $album_id]);
+        APIResponse::error('Album not found', 404);
     }
     
-    // === ПОЛУЧИТЬ ТРЕКИ ===
-    $stmt = $pdo->prepare("
-        SELECT 
-            id,
-            title,
-            description,
-            coverImagePath,
-            fullAudioPath,
-            duration,
-            views,
-            createdAt,
-            updatedAt
-        FROM Track
-        WHERE albumId = ?
-        ORDER BY id ASC
-    ");
-    
-    $stmt->execute([$album_id]);
-    $tracks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // === ФОРМАТИРОВАНИЕ ===
-    $album['id'] = (int)$album['id'];
-    $album['releaseDate'] = $album['releaseDate'] ? substr($album['releaseDate'], 0, 10) : null;
-    $album['track_count'] = count($tracks);
+    // === ПОЛУЧЕНИЕ ТРЕКОВ ===
+    // ИСПРАВЛЕНО: Сортировка по ID, т.к. trackNumber/track_number отсутствует
+    $stmt = $pdo->prepare("SELECT * FROM Track WHERE albumId = :album_id ORDER BY id ASC"); 
+    $stmt->execute(['album_id' => $album_id]);
+    $tracks = $stmt->fetchAll();
     
     $formatted_tracks = [];
+    $base_url = rtrim(defined('SITE_URL') ? SITE_URL : '', '/'); 
+
     foreach ($tracks as $track) {
-        $formatted_tracks[] = [
-            'id' => (int)$track['id'],
-            'title' => $track['title'],
-            'description' => $track['description'],
-            'cover_image' => $track['coverImagePath'],
-            'audio_url' => $track['fullAudioPath'],
-            'duration' => (int)$track['duration'],
-            'views' => (int)$track['views'],
-            'created_at' => substr($track['createdAt'], 0, 10)
-        ];
+        // Дополнительная проверка на null/отсутствие файла
+        $audio_file = $track['audio_file'] ?? '';
+        $cover_image = $track['cover_image'] ?? '';
+        
+        $track['fullAudioPath'] = $base_url . '/public/uploads/audio/' . $audio_file;
+        $track['coverImagePath'] = $base_url . '/public/uploads/covers/' . $cover_image;
+        
+$formatted_tracks[] = [
+    'id' => (int)$track['id'],
+    'title' => $track['title'],
+    'description' => $track['description'] ?: '',  // <-- Добавь ?: ''
+    'cover_image' => $track['coverImagePath'],
+    'audio_url' => $track['fullAudioPath'],
+    'duration' => (int)$track['duration'],
+    'views' => (int)$track['views'],
+    'created_at' => substr($track['createdAt'], 0, 10)
+];
     }
     
     $album['tracks'] = $formatted_tracks;
@@ -105,16 +93,19 @@ try {
     // === РАСЧЁТ ОБЩЕЙ ПРОДОЛЖИТЕЛЬНОСТИ ===
     $total_duration = array_sum(array_column($tracks, 'duration'));
     $album['total_duration'] = (int)$total_duration;
-    $album['total_duration_formatted'] = $this->formatDuration($total_duration);
+    $album['total_duration_formatted'] = formatDuration($total_duration); 
     
     $logger->logResponse('/api/v1/albums/detail', 200, null);
     APIResponse::success($album, 200);
     
 } catch (PDOException $e) {
+    // В случае ошибки БД, включаем полный показ ошибок, чтобы видеть, что пошло не так
+    error_reporting(E_ALL); 
     $logger->logException('/api/v1/albums/detail', $e);
     APIResponse::serverError('Database error', 'DB_ERROR');
     
 } catch (Exception $e) {
+    error_reporting(E_ALL);
     $logger->logException('/api/v1/albums/detail', $e);
     APIResponse::serverError($e->getMessage(), 'UNKNOWN_ERROR');
 }
@@ -126,13 +117,10 @@ function formatDuration($seconds) {
     $seconds = (int)$seconds;
     
     if ($seconds < 3600) {
-        $minutes = floor($seconds / 60);
-        $secs = $seconds % 60;
-        return sprintf('%02d:%02d', $minutes, $secs);
+        return gmdate('i:s', $seconds);
     }
     
-    $hours = floor($seconds / 3600);
-    $minutes = floor(($seconds % 3600) / 60);
-    $secs = $seconds % 60;
-    return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
+    return gmdate('H:i:s', $seconds);
 }
+
+?>
