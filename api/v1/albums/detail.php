@@ -61,32 +61,67 @@ try {
     
     // === ПОЛУЧЕНИЕ ТРЕКОВ ===
     // ИСПРАВЛЕНО: Сортировка по ID, т.к. trackNumber/track_number отсутствует
-    $stmt = $pdo->prepare("SELECT * FROM Track WHERE albumId = :album_id ORDER BY id ASC"); 
-    $stmt->execute(['album_id' => $album_id]);
-    $tracks = $stmt->fetchAll();
+   // $stmt = $pdo->prepare("SELECT * FROM Track WHERE albumId = :album_id ORDER BY id ASC"); 
+   //$stmt->execute(['album_id' => $album_id]);
+   // $tracks = $stmt->fetchAll();
     
-    $formatted_tracks = [];
-    $base_url = rtrim(defined('SITE_URL') ? SITE_URL : '', '/'); 
+$stmt = $pdo->prepare("
+    SELECT 
+        id,
+        title,
+        description,
+        coverImagePath,
+        fullAudioPath,
+        duration,
+        views,
+        createdAt
+    FROM Track 
+    WHERE albumId = :album_id 
+    ORDER BY id ASC
+"); 
+$stmt->execute(['album_id' => $album_id]);
+$tracks = $stmt->fetchAll();
 
-    foreach ($tracks as $track) {
-        // Дополнительная проверка на null/отсутствие файла
-        $audio_file = $track['audio_file'] ?? '';
-        $cover_image = $track['cover_image'] ?? '';
-        
-        $track['fullAudioPath'] = $base_url . '/public/uploads/audio/' . $audio_file;
-        $track['coverImagePath'] = $base_url . '/public/uploads/covers/' . $cover_image;
-        
-$formatted_tracks[] = [
-    'id' => (int)$track['id'],
-    'title' => $track['title'],
-    'description' => $track['description'] ?: '',  // <-- Добавь ?: ''
-    'cover_image' => $track['coverImagePath'],
-    'audio_url' => $track['fullAudioPath'],
-    'duration' => (int)$track['duration'],
-    'views' => (int)$track['views'],
-    'created_at' => substr($track['createdAt'], 0, 10)
-];
+$formatted_tracks = [];
+$base_url = rtrim(defined('SITE_URL') ? SITE_URL : '', '/'); 
+
+foreach ($tracks as $track) {
+    // ИСПРАВЛЕНО: Используем fullAudioPath напрямую
+    $audio_path = $track['fullAudioPath'] ?? '';
+    $cover_path = $track['coverImagePath'] ?? '';
+    
+    // Проверяем формат fullAudioPath
+    if (!empty($audio_path)) {
+        // Если уже полный URL
+        if (strpos($audio_path, 'http') === 0) {
+            $full_audio_url = $audio_path;
+        }
+        // Если начинается с /
+        elseif (strpos($audio_path, '/') === 0) {
+            $full_audio_url = $base_url . $audio_path;
+        }
+        // Иначе добавляем путь
+        else {
+            $full_audio_url = $base_url . '/public/uploads/full/' . $audio_path;
+        }
+    } else {
+        $full_audio_url = '';
     }
+    
+    $formatted_tracks[] = [
+        'id' => (int)$track['id'],
+        'title' => $track['title'],
+        'description' => $track['description'] ?: '',
+        'cover_image' => !empty($cover_path) ? 
+            (strpos($cover_path, 'http') === 0 ? $cover_path : $base_url . $cover_path) : 
+            null,
+        'audio_url' => $full_audio_url,
+        'duration' => (int)$track['duration'],
+        'duration_formatted' => formatDuration((int)$track['duration']),
+        'views' => (int)$track['views'],
+        'created_at' => substr($track['createdAt'], 0, 10)
+    ];
+}
     
     $album['tracks'] = $formatted_tracks;
     

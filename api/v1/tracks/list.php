@@ -88,8 +88,23 @@ try {
     $tracks = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // === ФОРМАТИРОВАНИЕ ===
+    define('FILE_BASE_PATH', '/var/www/www-root/data/www/moi-band.com.ua');
     $formatted_tracks = [];
     foreach ($tracks as $track) {
+            $audioPath = ltrim($track['fullAudioPath'], '/');
+    $fullAudioPath = FILE_BASE_PATH . '/' . $audioPath;
+    $audioExists = file_exists($fullAudioPath);
+    
+    $videoExists = false;
+    $videoUrl = null;
+    if (!empty($track['videoPath'])) {
+        $videoPath = ltrim($track['videoPath'], '/');
+        $fullVideoPath = FILE_BASE_PATH . '/' . $videoPath;
+        $videoExists = file_exists($fullVideoPath);
+        if ($videoExists) {
+            $videoUrl = $track['videoPath'];
+        }
+    }
         $formatted_tracks[] = [
             'id' => (int)$track['id'],
             'title' => $track['title'],

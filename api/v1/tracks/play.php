@@ -71,7 +71,23 @@ try {
     
     $stmt->execute([$track_id]);
     $track = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+    define('FILE_BASE_PATH', '/var/www/www-root/data/www/moi-band.com.ua');
+
+// Проверяем файлы
+$audioPath = ltrim($track['fullAudioPath'], '/');
+$fullAudioPath = FILE_BASE_PATH . '/' . $audioPath;
+$audioExists = file_exists($fullAudioPath);
+
+$videoExists = false;
+$videoUrl = null;
+if (!empty($track['videoPath'])) {
+    $videoPath = ltrim($track['videoPath'], '/');
+    $fullVideoPath = FILE_BASE_PATH . '/' . $videoPath;
+    $videoExists = file_exists($fullVideoPath);
+    if ($videoExists) {
+        $videoUrl = $track['videoPath'];
+    }
+}
     if (!$track) {
         $logger->logError('/api/v1/tracks/play', 'Track not found', 404, null, ['track_id' => $track_id]);
         APIResponse::notFound('Track not found');
